@@ -110,7 +110,7 @@ app.post('/authenticate', function(req, res) {
         // if user is found and password is right
         // create a token
         var token = jwt.sign(user, app.get('superSecret'), {
-          expiresInMinutes: 1440 // expires in 24 hours
+          expiresIn: "24h" // expires in 24 hours
         });
 
         // return the information including token as JSON
