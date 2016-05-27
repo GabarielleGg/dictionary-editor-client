@@ -1,0 +1,6 @@
+
+Resources/Node.js/node_modules
+Resources/Node.js/public/libs/*
+
+# git stuff
+# *.gitignore

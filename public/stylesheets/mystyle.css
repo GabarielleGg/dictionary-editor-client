@@ -1,0 +1,174 @@
+
+.materialApp .text-capitalize {
+  text-transform: capitalize; }
+.materialApp .md-fab:hover, .materialApp .md-fab.md-focused {
+  background-color: #000 !important; }
+.materialApp p.note {
+  font-size: 1.2rem; }
+.materialApp .lock-size {
+  min-width: 300px;
+  min-height: 300px;
+  width: 300px;
+  height: 300px;
+  margin-left: auto;
+  margin-right: auto; }
+
+
+
+/* ------------- styles for loadTerms ---------------*/
+ #vertical-container {
+  height: 600px;
+  width: 900px; }
+ .repeated-item {
+  border-bottom: 1px solid #ddd;
+  box-sizing: border-box;
+  height: 60px;
+  padding-top: 6px; }
+ md-content {
+  margin: 0px; }
+ .md-virtual-repeat-container .md-virtual-repeat-offsetter {
+  padding-left: 16px; }
+/* ------------- styles for loadTerms ---------------*/  
+  
+/* ------------- styles for chips (not used) ---------------*/  
+ .custom-chips .md-chip {
+  position: relative;
+  padding-right: 35px; }
+   .custom-chips .md-chip .md-chip-remove-container {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    margin-right: 0;
+    height: 24px; }
+     .custom-chips .md-chip .md-chip-remove-container button.vegetablechip {
+      position: relative;
+      height: 24px;
+      width: 24px;
+      line-height: 30px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 50%;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      margin: 0;
+      transition: background 0.15s linear;
+      display: block; }
+       .custom-chips .md-chip .md-chip-remove-container button.vegetablechip md-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate3d(-50%, -50%, 0) scale(0.7);
+        color: white;
+        fill: white; }
+       .custom-chips .md-chip .md-chip-remove-container button.vegetablechip:hover,  .custom-chips .md-chip .md-chip-remove-container button.vegetablechip:focus {
+        background: rgba(255, 0, 0, 0.8); }
+/* ------------- styles for chips (not used) ---------------*/  
+
+/* styles for dictionary edit-*/
+.gridListDynamicTiles .gray {
+  background: #f5f5f5; }
+.gridListDynamicTiles .green {
+  background: #b9f6ca; }
+.gridListDynamicTiles .yellow {
+  background: #ffff8d; }
+.gridListDynamicTiles .blue {
+  background: #84ffff; }
+.gridListDynamicTiles .darkBlue {
+  background: #80d8ff; }
+.gridListDynamicTiles .deepBlue {
+  background: #448aff; }
+.gridListDynamicTiles .purple {
+  background: #b388ff; }
+.gridListDynamicTiles .lightPurple {
+  background: #8c9eff; }
+.gridListDynamicTiles .red {
+  background: #ff8a80; }
+.gridListDynamicTiles .pink {
+  background: #ff80ab; }  
+  
+/* if the text is too long in the table's cells ...*/ 
+.gridListDynamicTiles .md-list-item-text p {
+      /*text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden; */
+	  font-size: 10px;
+      margin:0 0px 0 0px; 
+      padding:0;
+      /*border: 5px solid navy;*/
+}
+	  
+/* styles needed to aling main menu icons with lables*/
+i.material-icons {
+    vertical-align: middle;
+}
+span.ng-scope {
+    vertical-align: middle;
+}
+
+.no-animate {
+   -webkit-transition: none !important;
+   transition: none !important;
+}
+
+/* ------------ styles for d3 tree ------------*/
+
+.node {
+    cursor: pointer;
+  }
+
+  .overlay{
+      background-color:#EEE;
+  }
+   
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+   
+  .node text {
+    font-size:10px; 
+    font-family:sans-serif;
+  }
+   
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 1.5px;
+  }
+
+  .templink {
+    fill: none;
+    stroke: red;
+    stroke-width: 3px;
+  }
+
+  .ghostCircle.show{
+      display:block;
+  }
+
+  .ghostCircle, .activeDrag .ghostCircle{
+       display: none;
+  }
+
+  /*------ links on definitions------*/
+  .buttonflat {
+    border: none;
+    background: #FFF;
+    color: blue;
+    padding: 5px 20px;
+    font-size: 22px;
+    font-family: Palatino;
+    font-weight: bold;
+}
+.buttonflatdis {
+    border: none;
+    background: #FFF;
+    color: gray;
+    padding: 5px 20px;
+    font-size: 22px;
+    font-family: Palatino;
+    font-weight: bold;
+}
+
