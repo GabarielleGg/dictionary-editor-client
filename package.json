@@ -15,7 +15,7 @@
     "mongoskin": "~1.4",
     "morgan": "~1.5.3",
     "serve-favicon": "~2.2.1",
-    "jsonwebtoken ":"",
-    "mongoose":""
+    "jsonwebtoken ":"~7.0.0",
+    "mongoose":"~4.4.19"
   }
 }
