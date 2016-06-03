@@ -85,8 +85,6 @@ module.exports.updateieml = function (req, res) {
         console.log(e);
     }
 
-    //console.log("rec: "+JSON.stringify(rec));
-
     // some function must be executed before changing terms DB, and some after changing terms DB
     async.series([
 
@@ -99,7 +97,6 @@ module.exports.updateieml = function (req, res) {
                     }
 
                     if (result.length == 1) {
-                        //console.log("result: "+JSON.stringify(result[0]));
                         same_ieml = (result[0].IEML == rec.IEML);
                         same_para = (result[0].PARADIGM == rec.PARADIGM);
                         old_ieml = result[0].IEML;
@@ -162,7 +159,6 @@ module.exports.remieml = function (req, res) {
             console.log("----deleteRelsForIEML");
             // remove relations associated with this ieml
             deleteRelsForIEML(req.params.id, db, callback);
-            //callback();
         },
         function(callback) {
             // update existing relations
@@ -181,7 +177,6 @@ module.exports.remieml = function (req, res) {
                     if (result) {
                         console.log("Removed annotations for: " + req.params.id);
                     }
-
                     callback();
                 }
             );
@@ -200,7 +195,6 @@ module.exports.remieml = function (req, res) {
                         console.log("removed "  + req.params.id);
                         res.json(result);
                     }
-
                     callback();
                 }
             );
@@ -216,16 +210,6 @@ module.exports.verifyIeml = function (req, res) {
     var db = req.db;
     console.log("before verifying ieml");
     console.log(req.params.id);
-
-    //res.sendStatus(200);  test, all was ok
-    // db.terms.find({ "ieml": "f.u.-f.u.-'" })
-
-    //db.collection('bands').find({name:'Road Crew'}).toArray(
-    //  function(err, result) {
-    //    console.log('Band members of Road Crew');
-    //    console.log(result[0].members);
-    //  }
-    //);
 
     db.collection('terms').find({IEML:req.params.id}).toArray(
         function(err, result) {
@@ -247,10 +231,6 @@ module.exports.verifyFr = function (req, res) {
     console.log("before verifying FR");
     console.log(req.params.id);
 
-    //res.sendStatus(200);  test, all was ok
-    // db.terms.find( { terms: { $all: [ { "$elemMatch" : { lang: "FR", means: "illusion" } } ] } } )
-
-    //db.collection('terms').find({ terms: { $all: [ { "$elemMatch" : { lang: "FR", means: req.params.id } } ] } }).toArray(
     db.collection('terms').find({FR:req.params.id}).toArray(
         function(err, result) {
             if (err) {
@@ -298,7 +278,6 @@ module.exports.getRels = function (req, res) {
             if (err) {
                 console.log("ERROR"+err);
                 throw err;
-                res.sendSatus(500);
                 return;
             }
             if (relNames) {
@@ -379,7 +358,6 @@ var deleteRelsForIEML = function (ieml, db, onDone) {
                     console.log("ERROR"+err);
                 else {
                     var rellist = list.relations;
-                    //console.log("TO REMOVE: "+JSON.stringify(rellist));
 
                     for (var i = 0; i < rellist.length; i++) {
                         db.collection('relationships').remove( { start : rellist[i].start, ieml : rellist[i].stop, type : rellist[i].name } , function(err, result) {
@@ -505,9 +483,6 @@ var updateRelations = function (delta, db, onDone) {
                         callback(err);
                     }
                     forward = result;
-
-                    //console.log("Forward: "+JSON.stringify(forward));
-
                     callback();
                 });
             },
@@ -519,9 +494,6 @@ var updateRelations = function (delta, db, onDone) {
                         callback(err);
                     }
                     backward = result;
-
-                    //console.log("Backward: "+JSON.stringify(backward));
-
                     callback();
                 });
             },
@@ -666,8 +638,6 @@ var loadRelFromParser = function (ieml, isP, callback) {
     var options = {
         hostname: 'test-ieml.rhcloud.com',
         port: 80,
-        //hostname:'localhost',
-        //port:8081,
         path: '/ScriptParser/rest/iemlparser/relationship2',
         method: 'POST',
         headers: {
@@ -678,8 +648,6 @@ var loadRelFromParser = function (ieml, isP, callback) {
 
     var body = '';
     var req = http.request(options, function(res) {
-        //console.log('STATUS: ' + res.statusCode);
-        //console.log('HEADERS: ' + JSON.stringify(res.headers));
         res.setEncoding('utf8');
         res.on('data', function (chunk) {
             body += chunk;
