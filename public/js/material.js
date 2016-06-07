@@ -57,17 +57,17 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         
         iemlvalid : function(input) {            
           $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-          return $http.post('http://test-ieml.rhcloud.com/ScriptParser/rest/iemlparser', 'iemltext='+encodeURIComponent(input));
+          return $http.post('http://parser/ScriptParser/rest/iemlparser', 'iemltext='+encodeURIComponent(input));
         }, 
 
         parsetree : function(input) {            
           $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-          return $http.post('http://test-ieml.rhcloud.com/ScriptParser/rest/iemlparser/tree', 'iemltext='+encodeURIComponent(input));
+          return $http.post('http://parser/ScriptParser/rest/iemlparser/tree', 'iemltext='+encodeURIComponent(input));
         },
 
         iemltable : function(input) {            
           $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-          return $http.post('http://test-ieml.rhcloud.com/ScriptParser/rest/iemlparser/tables', 'iemltext='+encodeURIComponent(input));
+          return $http.post('http://parser/ScriptParser/rest/iemlparser/tables', 'iemltext='+encodeURIComponent(input));
         },
 
         rels : function(input)  {

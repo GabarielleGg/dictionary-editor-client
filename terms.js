@@ -60,7 +60,7 @@ var main = function() {
 								});
 
 								var options = {
-								  hostname: 'test-ieml.rhcloud.com',
+								  hostname: 'parser',
 								  port: 80,
 								  //hostname:'localhost',
 								  //port:8081,

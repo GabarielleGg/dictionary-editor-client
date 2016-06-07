@@ -743,7 +743,7 @@ var loadRelFromParser = function (ieml, isP, callback) {
         console.log('postData: ' + JSON.stringify(postData));
         
 		var options = {
-		  hostname: 'test-ieml.rhcloud.com',
+		  hostname: 'parser',
 		  port: 80,
 		  //hostname:'localhost',
 		  //port:8081,
