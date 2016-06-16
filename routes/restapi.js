@@ -743,7 +743,7 @@ var loadRelFromParser = function (ieml, isP, callback) {
         console.log('postData: ' + JSON.stringify(postData));
         
 		var options = {
-		  hostname: 'parser',
+		  hostname: 'parser.dev.metaml.net',
 		  port: 80,
 		  //hostname:'localhost',
 		  //port:8081,
