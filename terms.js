@@ -64,7 +64,7 @@ var main = function() {
 								  port: 80,
 								  //hostname:'localhost',
 								  //port:8081,
-								  path: '/ScriptParser/rest/iemlparser',
+								  path: '/rest/iemlparser',
 								  method: 'POST',
 								  headers: {
 								    'Content-Type': 'application/x-www-form-urlencoded',
