@@ -12,14 +12,14 @@ var mongoose    = require('mongoose');
 
 
 var db_name='db3';
-var mongodb_connection_string = 'mongodb://127.0.0.1:27017/' + db_name;
+var mongodb_connection_string = 'mongodb://mongodb:27017/' + db_name;
 //take advantage of openshift env vars when available:
 if(process.env.OPENSHIFT_MONGODB_DB_URL){
   mongodb_connection_string = process.env.OPENSHIFT_MONGODB_DB_URL + db_name+'?authSource=admin';
 }
 
 var db_name_users='dbusers';
-var mongodb_connection_string_users = 'mongodb://127.0.0.1:27017/' + db_name_users;
+var mongodb_connection_string_users = 'mongodb://mongodb:27017/' + db_name_users;
 //take advantage of openshift env vars when available:
 if(process.env.OPENSHIFT_MONGODB_DB_URL){
   mongodb_connection_string_users = process.env.OPENSHIFT_MONGODB_DB_URL + db_name_users+'?authSource=admin';
@@ -240,8 +240,8 @@ var port = process.env.OPENSHIFT_INTERNAL_PORT || 8080;
 app.listen(port, ipaddr);*/
 
 var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+//var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
  
-app.listen(server_port, server_ip_address, function () {
-  console.log( "Listening on " + server_ip_address + ", server_port " +server_port )
+app.listen(server_port, function () {
+  console.log( "Listening on server_port " +server_port )
 });
