@@ -743,11 +743,11 @@ var loadRelFromParser = function (ieml, isP, callback) {
         console.log('postData: ' + JSON.stringify(postData));
         
 		var options = {
-		  hostname: 'parser.dev.metaml.net',
+		  hostname: parser_host,
 		  port: 80,
 		  //hostname:'localhost',
 		  //port:8081,
-		  path: '/rest/iemlparser/relationship2',
+		  path: parser_service + '/relationship2',
 		  method: 'POST',
 		  headers: {
 		    'Content-Type': 'application/x-www-form-urlencoded',

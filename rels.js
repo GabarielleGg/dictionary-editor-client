@@ -4,7 +4,7 @@
 
 
 var db_name='db3';
-var mongodb_connection_string = 'mongodb://mongodb:27017/' + db_name;
+var mongodb_connection_string = mongo_url + db_name;
 //take advantage of openshift env vars when available:
 if(process.env.OPENSHIFT_MONGODB_DB_URL){
   mongodb_connection_string = process.env.OPENSHIFT_MONGODB_DB_URL + db_name+'?authSource=admin';
@@ -85,11 +85,11 @@ var onIEMLLoaded2 = function() {
                 //console.log(postData);
 
                 var options = {
-                    hostname: 'parser.dev.metaml.net',
+                    hostname: parser_host,
                     port: 80,
                     //hostname:'localhost',
                     //port:8081,
-                    path: '/rest/iemlparser/relationship2',
+                    path: parser_service + '/relationship2',
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
