@@ -57,17 +57,17 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         
         iemlvalid : function(input) {            
           $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-          return $http.post('http://parser.dev.metaml.net/rest/iemlparser', 'iemltext='+encodeURIComponent(input));
+          return $http.post(parser_url, 'iemltext='+encodeURIComponent(input));
         }, 
 
         parsetree : function(input) {            
           $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-          return $http.post('http://parser.dev.metaml.net/rest/iemlparser/tree', 'iemltext='+encodeURIComponent(input));
+          return $http.post(parser_url + '/tree', 'iemltext='+encodeURIComponent(input));
         },
 
         iemltable : function(input) {            
           $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-          return $http.post('http://parser.dev.metaml.net/rest/iemlparser/tables', 'iemltext='+encodeURIComponent(input));
+          return $http.post(parser_url + '/tables', 'iemltext='+encodeURIComponent(input));
         },
 
         rels : function(input)  {
