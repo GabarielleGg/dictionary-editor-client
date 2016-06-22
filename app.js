@@ -10,16 +10,17 @@ var User   = require('./models/users');
 var mongoose    = require('mongoose');
 
 
+var configs = require("./configs");
 
 var db_name='db3';
-var mongodb_connection_string = mongo_url + db_name;
+var mongodb_connection_string = configs.mongo_url + db_name;
 //take advantage of openshift env vars when available:
 if(process.env.OPENSHIFT_MONGODB_DB_URL){
   mongodb_connection_string = process.env.OPENSHIFT_MONGODB_DB_URL + db_name+'?authSource=admin';
 }
 
 var db_name_users='dbusers';
-var mongodb_connection_string_users = mongo_url + db_name_users;
+var mongodb_connection_string_users = configs.mongo_url + db_name_users;
 //take advantage of openshift env vars when available:
 if(process.env.OPENSHIFT_MONGODB_DB_URL){
   mongodb_connection_string_users = process.env.OPENSHIFT_MONGODB_DB_URL + db_name_users+'?authSource=admin';
