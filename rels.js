@@ -2,14 +2,14 @@
 
 
 
+var configs = require('./configs');
 
 var db_name='db3';
-var mongodb_connection_string = mongo_url + db_name;
+var mongodb_connection_string = configs.mongo_url + db_name;
 //take advantage of openshift env vars when available:
 if(process.env.OPENSHIFT_MONGODB_DB_URL){
   mongodb_connection_string = process.env.OPENSHIFT_MONGODB_DB_URL + db_name+'?authSource=admin';
 }
-
 var db = require('mongoskin').db(mongodb_connection_string);
 var allieml =[];
 var countBad = 0;
@@ -85,11 +85,11 @@ var onIEMLLoaded2 = function() {
                 //console.log(postData);
 
                 var options = {
-                    hostname: parser_host,
+                    hostname: configs.parser_host,
                     port: 80,
                     //hostname:'localhost',
                     //port:8081,
-                    path: parser_service + '/relationship2',
+                    path: configs.parser_service + '/relationship2',
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
