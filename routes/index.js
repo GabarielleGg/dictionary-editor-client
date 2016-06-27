@@ -14,4 +14,10 @@ router.get('/material', function(req, res, next) {
   res.sendFile('material.html', { root: path.join(__dirname, '../views') })
 });
 
+router.get('/configs.js', function(req, res, next) {
+  // see: http://stackoverflow.com/questions/25463423/res-sendfile-absolute-path
+  res.sendFile('configs.js', { root: path.join(__dirname, '..') })
+});
+
+
 module.exports = router;
