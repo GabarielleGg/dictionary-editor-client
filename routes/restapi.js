@@ -9,6 +9,7 @@
 //http://www.sebastianseilund.com/nodejs-async-in-practice
 
 var async = require('../public/libs/async');
+var configs = require('../configs');
 
 module.exports.allieml = function (req, res) {
 
@@ -632,19 +633,19 @@ var loadRelFromParser = function (ieml, isP, callback) {
         'parad'    : isP
     });
 
-    console.log('ieml: ' + JSON.stringify(ieml));
-    console.log('postData: ' + JSON.stringify(postData));
-
-    var options = {
-        hostname: 'test-ieml.rhcloud.com',
-        port: 80,
-        path: '/ScriptParser/rest/iemlparser/relationship2',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': postData.length
-        }
-    };
+        console.log('ieml: ' + JSON.stringify(ieml));
+        console.log('postData: ' + JSON.stringify(postData));
+        
+		var options = {
+		  hostname: configs.parser_host,
+		  port: 80,
+		  path: configs.parser_service + '/relationship2',
+		  method: 'POST',
+		  headers: {
+		    'Content-Type': 'application/x-www-form-urlencoded',
+		    'Content-Length': postData.length
+		  }
+		};
 
     var body = '';
     var req = http.request(options, function(res) {

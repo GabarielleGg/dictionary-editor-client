@@ -2,14 +2,14 @@
 
 
 
+var configs = require('./configs');
 
 var db_name='db3';
-var mongodb_connection_string = 'mongodb://127.0.0.1:27017/' + db_name;
+var mongodb_connection_string = configs.mongo_url + db_name;
 //take advantage of openshift env vars when available:
 if(process.env.OPENSHIFT_MONGODB_DB_URL){
     mongodb_connection_string = process.env.OPENSHIFT_MONGODB_DB_URL + db_name+'?authSource=admin';
 }
-
 var db = require('mongoskin').db(mongodb_connection_string);
 var allieml =[];
 var countBad = 0;
@@ -76,16 +76,16 @@ var onIEMLLoaded2 = function() {
                         'parad'    : isP
                     });
 
-                    var options = {
-                        hostname: 'test-ieml.rhcloud.com',
-                        port: 80,
-                        path: '/ScriptParser/rest/iemlparser/relationship2',
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'Content-Length': postData.length
-                        }
-                    };
+                var options = {
+                    hostname: configs.parser_host,
+                    port: 80,
+                    path: configs.parser_service + '/relationship2',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Content-Length': postData.length
+                    }
+                };
 
                     var body = '';
                     var req = http.request(options, function(res) {
