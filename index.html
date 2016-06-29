@@ -1,40 +1,40 @@
 <html lang="en" ng-app="materialApp">
 
-<!--md-icon md-svg-icon="../libs/material-design-icons/action/svg/production/ic_delete_24px.svg"></md-icon-->
+<!--md-icon md-svg-icon="./libs/material-design-icons/action/svg/production/ic_delete_24px.svg"></md-icon-->
 <!-- https://www.google.com/design/icons/-->
 
   <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../libs/angular-material/angular-material.css">
-	
+    <link rel="stylesheet" href="./libs/angular-material/angular-material.css">
+
 	<!-- Icons -->
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	  
+
 	<!-- following css is required to get the "delete" button in side chips to look nice -->
-	<link rel="stylesheet" href="/stylesheets/mystyle.css">
+	<link rel="stylesheet" href="stylesheets/mystyle.css">
 
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
-  
-	
+
+
   </head>
-  
+
   <body>
-  
+
     <!-- TOP TOOLBAR -->
   	<div ng-controller="mainMenuController">
 	  <md-content>
 		<md-toolbar>
-		  <div class="md-toolbar-tools">	
+		  <div class="md-toolbar-tools">
 		    <div>
                <i class="material-icons">language</i>
 	        </div>
-       		
+
 			<h2>
 			  <span class="md-title" style="padding-left:1em; padding-right:2em" >quickIEMLeditor</span>
 			</h2>
-			
+
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" style="fill:rgba(255,255,255,0.87)"><path d="M20 6v12h2V6h-2z"></path></svg>
-				          
+
 			 <md-button class="md-icon-button" title="Add new IEML item" ng-show="isShowAddNew()" ng-click="editEntry(-1)">
 				  <i class="material-icons">add</i>
 	         </md-button>
@@ -48,52 +48,52 @@
 
 		  </div>
 
-		   
+
 		</md-toolbar>
-		
+
 		<br/><br/>
-		
+
 	  </md-content>
 	</div>
 	<!-- END TOP TOOLBAR -->
-	
+
 	<!-- MIDDLE -->
 	<div flex layout-padding style="width: 100%; ">
 	  <md-content>
-        <ng-view  id = "toastBounds">	
-		
+        <ng-view  id = "toastBounds">
+
 		</ng-view>
-	  </md-content>	
+	  </md-content>
 	</div>
 	<!-- END MIDDLE -->
-	  
+
 	<!-- jQuery needed for outerWidth to work-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
 
 	<!-- angular -->
-	<script src="../libs/angular/angular.js"></script>
-	<script src="../libs/angular-route/angular-route.js"></script>
+	<script src="./libs/angular/angular.js"></script>
+	<script src="./libs/angular-route/angular-route.js"></script>
     <!-- angular material-->
-	<script src="../libs/angular-aria/angular-aria.js"></script>
-   	<script src="../libs/angular-animate/angular-animate.js"></script>
-	<script src="../libs/angular-material/angular-material.js"></script>
+	<script src="./libs/angular-aria/angular-aria.js"></script>
+   	<script src="./libs/angular-animate/angular-animate.js"></script>
+	<script src="./libs/angular-material/angular-material.js"></script>
 	<!-- angular messages-->
-	<script src="../libs/angular-messages/angular-messages.js"></script>
+	<script src="./libs/angular-messages/angular-messages.js"></script>
 
-	<script src="../libs/angular-sanitize/angular-sanitize.js"></script>
+	<script src="./libs/angular-sanitize/angular-sanitize.js"></script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 
-	<script src="../js/d3directive.js"></script>
-	<script src="../js/annotations.js"></script>
-	<script src="../../configs.js"></script>
+	<script src="./js/d3directive.js"></script>
+	<script src="./js/annotations.js"></script>
+	<script src="./configs.js"></script>
 	<!-- app -->
-	<script src="../js/material.js"></script>
-	
+	<script src="./js/material.js"></script>
 
-	
 
-	
+
+
+
   </body>
 </html>

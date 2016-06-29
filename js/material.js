@@ -6,24 +6,24 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         $routeProvider
             .when('/', {
                 controller: 'welcomeController',
-                templateUrl: '/js/partials/welcome.html'
+                templateUrl: './js/partials/welcome.html'
             })
             .when('/loadTerms', {
                 controller: 'loadIEMLController',
-                templateUrl: '/js/partials/loadTerms.html'
+                templateUrl: './js/partials/loadTerms.html'
             })
             .when('/edit/:id', {
                 controller: 'iemlEntryEditorController',
-                templateUrl: '/js/partials/editIeml.html'
+                templateUrl: './js/partials/editIeml.html'
             })
             .when('/dicEdit/IEML/:IEML', {
                 controller: 'iemlDictionaryController',
-                templateUrl: '/js/partials/dictionaryEdit.html',
+                templateUrl: './js/partials/dictionaryEdit.html',
                 reloadOnSearch: true
             })
             .when('/graph', {
                 controller: 'iemlDictionaryController',
-                templateUrl: '/js/partials/graph.html'
+                templateUrl: './js/partials/graph.html'
             })
         ;
     })
