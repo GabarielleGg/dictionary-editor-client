@@ -56,7 +56,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
             iemlvalid : function(input) {
                 // $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-                return $http.get(api_url + 'api/scriptparser/parse?' + 'iemltext='+encodeURIComponent(input));
+                return $http.get(api_url + '/api/scriptparser/parse?' + 'iemltext='+encodeURIComponent(input));
             },
 
             parsetree : function(input) {
@@ -1091,7 +1091,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             if (tableTile.editable||tableTile.creatable) {
                 $mdDialog.show({
                     controller:'toastControler',
-                    templateUrl: '/js/templates/toast1.tmpl.html',
+                    templateUrl: 'js/templates/toast1.tmpl.html',
                     parent: angular.element(document.body),
                     clickOutsideToClose:true
                 });
@@ -1136,7 +1136,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         $scope.showSignIn = function(ev) {
             $mdDialog.show({
                 controller: DialogController,
-                templateUrl: '/js/templates/dialog1.tmpl.html',
+                templateUrl: 'js/templates/dialog1.tmpl.html',
                 parent: angular.element(document.body),
                 targetEvent: ev,
                 clickOutsideToClose:true
@@ -1160,7 +1160,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 $scope.dataLoading=true;
                 $http({
                     method  : 'POST',
-                    url     : '/authenticate',
+                    url     : api_url + '/api/client/authenticate',
                     data    : $.param($scope.formData),  // pass in data as strings
                     headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
                 }).then(function(response) {
