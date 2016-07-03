@@ -2,159 +2,133 @@
 
 <div style="width: 1200px;">
 
-    <h2 align="center">{{tableTitle}}</h2> 
+    <h2 align="center">{{tableTitle}}</h2>
 
     <md-tabs md-stretch-tabs="always" md-dynamic-height="" md-border-bottom="">
-      <md-tab label="DEFINITION">
-        <md-content class="md-padding">
-        
-          <div>
-            <p align="left"><b>{{tableTitle}}</b> {{lookupLabels(tableTitle).DISP}}</p>
-            <p align="left"><b>Class</b> {{DefinedEntryClass}}</p>
-            <p align="left"><b>Layer</b> {{DefinedEntry.LAYER}}</p>
-            <p align="left"><b>Cardinality</b> {{DefinedEntry.TAILLE}}</p>
-          </div>
-        
-          <br/>
-          
+        <md-tab label="DEFINITION">
+            <md-content class="md-padding">
 
-          <div ng-repeat="def in definitions"> 
-            
-            <div layout="col" ng-show="def.visible">
-              <li style = "width:15%;padding-top: 2px;" > 
-               {{def.reltype}}
-              </li>   
-              <!--md-switch  style = "margin: 0px 0px 0px 10px;" ng-change="toggleRelVis(def.reltype)" ng-disabled="false" aria-label="Hide" ng-model="def.visible" class="md-block/"-->  
-            </div>
-            
-            <div ng-repeat="lnk in def.rellist" ng-show="def.visible">
-                <div layout="column" ng-show="lnk.exists">                               
-                     <table>
-                         <tr>
-                            <td style="width:400px;"> 
-                              <a style="border: none;" align="left" href="#/dicEdit/IEML/{{lnk.ieml}}" target="_self" ng-class="{disabled:!lnk.exists, buttonflat:lnk.exists, buttonflatdis:!lnk.exists}"   class="btn">{{lnk.ieml}}</a>
-                            </td>
-                              
-                            <td>
+                <div>
+                    <p align="left"><b>{{tableTitle}}</b> {{lookupLabels(tableTitle).DISP}}</p>
+                    <p align="left"><b>Class</b> {{DefinedEntryClass}}</p>
+                    <p align="left"><b>Layer</b> {{DefinedEntry.LAYER}}</p>
+                    <p align="left"><b>Cardinality</b> {{DefinedEntry.TAILLE}}</p>
+                </div>
+
+                <br/>
+
+
+                <div ng-repeat="def in definitions">
+
+                    <div layout="col" ng-show="def.visible">
+                        <li style = "width:15%;padding-top: 2px;" >
+                            {{def.reltype}}
+                        </li>
+                    </div>
+
+                    <div ng-repeat="lnk in def.rellist" ng-show="def.visible">
+                        <div layout="column" ng-show="lnk.exists">
+                            <table>
+                                <tr>
+                                    <td style="width:400px;">
+                                        <a style="border: none;" align="left" href="#/dicEdit/IEML/{{lnk.ieml}}" target="_self" ng-class="{disabled:!lnk.exists, buttonflat:lnk.exists, buttonflatdis:!lnk.exists}"   class="btn">{{lnk.ieml}}</a>
+                                    </td>
+
+                                    <td>
+                                        <table>
+                                            <tr> <p  align="left">{{lookupLabels(lnk.ieml).DISP}}</p></tr>
+                                            <!--tr> <p  align="left">{{lookupLabels(lnk.ieml).FR}}</p></tr-->
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </md-content>
+        </md-tab>
+
+        <md-tab label="TABLE">
+            <md-content class="md-padding">
+
+
+                <div flex class="gridListDynamicTiles" ng-show="showTables" >
+                    <md-tabs md-dynamic-height="" md-border-bottom="" ng-repeat="maintable in materialTables">
+                        <md-tab label="{{subtable.tabTitle}}" ng-repeat="subtable in maintable.table" >
+                            <md-content class="md-padding">
+                                <md-grid-list md-cols="{{maintable.Col}}" md-row-height="100px" md-gutter="3px">
+                                    <md-grid-tile ng-click="showLables(tile)" ng-repeat="tile in subtable.slice" md-rowspan="{{tile.span.row}}" md-colspan="{{tile.span.col}}" style=" border-style: solid;
+                    border-width: 1px; border-color: black;" ng-class="tile.background">
+
+                                        <md-list-item ng-show="tile.editable" style="margin:0 0px 0 0px; padding:0 0px 0 0px">
+                                            <div flex class="md-list-item-text" layout-fill>
+                                                <p align="center">{{tile.value}}</p>
+                                                <p ng-show="filterLanguage=='English'" align="center">{{tile.means.en}}</p>
+                                                <p ng-show="filterLanguage!='English'"align="center">{{tile.means.fr}}</p>
+                                            </div>
+                                        </md-list-item>
+
+                                        <md-list-item ng-show="tile.creatable" style="margin:0 0px 0 0px; padding:0 0px 0 0px">
+                                            <div flex class="md-list-item-text ">
+                                                <p align="center">{{tile.value}}</p>
+                                            </div>
+                                        </md-list-item>
+
+                                    </md-grid-tile>
+                                </md-grid-list>
+                            </md-content>
+                        </md-tab>
+                    </md-tabs>
+                </div>
+
+                <div ng-show="!showTables">
+
+                    <div ng-repeat="def in definitions | filter:filterContainedRelations()">
+
+                        <div layout="col">
+                            <li style = "width:15%;padding-top: 2px;" >
+                                {{def.reltype}}
+                            </li>
+                        </div>
+
+                        <div ng-repeat="lnk in def.rellist">
+                            <div layout="column"  ng-show="(lnk.exists && lnk.visible)||showHidden">
                                 <table>
-                                    <tr> <p  align="left">{{lookupLabels(lnk.ieml).DISP}}</p></tr>
-                                    <!--tr> <p  align="left">{{lookupLabels(lnk.ieml).FR}}</p></tr-->
+                                    <tr>
+                                        <td style="width:400px;">
+                                            <a style="border: none;" align="left" href="#/dicEdit/IEML/{{lnk.ieml}}" target="_self" ng-show="(lnk.exists && lnk.visible)||showHidden"  ng-class="{disabled:!lnk.exists, buttonflat:lnk.exists, buttonflatdis:!lnk.exists}"   class="btn">{{lnk.ieml}}</a>
+                                        </td>
+
+                                        <td>
+                                            <table>
+                                                <tr> <p  align="left">{{lookupLabels(lnk.ieml).DISP}}</p></tr>
+                                            </table>
+                                        </td>
+                                    </tr>
                                 </table>
-                            </td>
-                         </tr>
-                    </table>
-                  </div>
-            </div>
-          </div>
-     
-        </md-content>
-      </md-tab>
+                            </div>
+                        </div>
+                    </div>
 
-      <md-tab label="TABLE">
-        <md-content class="md-padding">
-        
-       
-       <div flex class="gridListDynamicTiles" ng-show="showTables" >
-          <md-tabs md-dynamic-height="" md-border-bottom="" ng-repeat="maintable in materialTables">
-            <md-tab label="{{subtable.tabTitle}}" ng-repeat="subtable in maintable.table" >
-              <md-content class="md-padding">
-                <md-grid-list md-cols="{{maintable.Col}}" md-row-height="100px" md-gutter="3px">
-                  <md-grid-tile ng-click="showLables(tile)" ng-repeat="tile in subtable.slice" md-rowspan="{{tile.span.row}}" md-colspan="{{tile.span.col}}" style=" border-style: solid;
-                    border-width: 1px; border-color: black;" ng-class="tile.background">  
-										
-		            <md-list-item ng-show="tile.editable" style="margin:0 0px 0 0px; padding:0 0px 0 0px">
-        		      <div flex class="md-list-item-text" layout-fill>
-					    <p align="center">{{tile.value}}</p>
-         		        <p ng-show="filterLanguage=='English'" align="center">{{tile.means.en}}</p>
-         		        <p ng-show="filterLanguage!='English'"align="center">{{tile.means.fr}}</p>					
-        		      </div>
-    		        </md-list-item>					
+                    <!--h2>{{tableError}}</h2-->
+                </div>
 
-		            <md-list-item ng-show="tile.creatable" style="margin:0 0px 0 0px; padding:0 0px 0 0px">
-        		      <div flex class="md-list-item-text ">
-         		        <p align="center">{{tile.value}}</p>			
-        		      </div>
-    		        </md-list-item>		
-					
-                  </md-grid-tile>
-                </md-grid-list>
-              </md-content> 
-            </md-tab>
-          </md-tabs>
-		</div>
+            </md-content>
+        </md-tab>
 
-   		<div ng-show="!showTables">
-        
-           <div ng-repeat="def in definitions | filter:filterContainedRelations()"> 
-            
-            <div layout="col">
-              <li style = "width:15%;padding-top: 2px;" > 
-               {{def.reltype}}
-              </li>    
-            </div>
-            
-            <div ng-repeat="lnk in def.rellist">
-                <div layout="column"  ng-show="(lnk.exists && lnk.visible)||showHidden">                               
-                     <table>
-                         <tr>
-                            <td style="width:400px;"> 
-                              <a style="border: none;" align="left" href="#/dicEdit/IEML/{{lnk.ieml}}" target="_self" ng-show="(lnk.exists && lnk.visible)||showHidden"  ng-class="{disabled:!lnk.exists, buttonflat:lnk.exists, buttonflatdis:!lnk.exists}"   class="btn">{{lnk.ieml}}</a>
-                            </td>
-                              
-                            <td>
-                                <table>
-                                    <tr> <p  align="left">{{lookupLabels(lnk.ieml).DISP}}</p></tr>
-                                </table>
-                            </td>
-                         </tr>
-                    </table>
-                  </div>
-            </div>
-          </div>
-          
-    		<!--h2>{{tableError}}</h2-->
-   		</div>	
-		
-        </md-content>
-      </md-tab>
-	
-    <md-tab label="GRAPH">
-      <md-content class="md-padding">
+        <md-tab label="GRAPH">
+            <md-content class="md-padding">
 
-    <div d3ieml style="width=100%; height=100%"> </div> 
-       
-      </md-content>
-    </md-tab>
-<div ng-controller="AnnotiationsController as contrl2">
-     <md-tab label="TAGS"><!-- md-on-deselect="contrl2.onTabClose()"-->
-      <md-content class="md-padding">
- 
-    <md-chips class="custom-chips" ng-model="contrl2.annotations" readonly="contrl2.readonly" secondary-placeholder="+Tag"  placeholder="Enter a tag" 
-      md-on-append="contrl2.newAnnotation($chip)"  md-on-remove="contrl2.onRemove($chip)">
-      <md-chip-template>
-        <span>
-          <!--<strong>{{$chip.formatted}}</strong> -->
-          <span ng-bind-html="$chip.formatted"></span>
-         
-         <!-- <a target=_blank href="http://www.w3schools.com">Visit W3Schools.com!</a> -->
-        </span>
-      </md-chip-template>
-      <button md-chip-remove="" class="md-primary vegetablechip">
-        <md-icon md-svg-icon="md-close"></md-icon>
-      </button>
-    </md-chips>
-   
+                <div d3ieml style="width=100%; height=100%"> </div>
 
-
-       
-      </md-content>
-    </md-tab>
-</div>   
-  </md-tabs>
-<div>
-          <br/><br/>
-          <md-button class="md-raised" ng-click="cancelEdit()"> Back </md-button>
-</div>
+            </md-content>
+        </md-tab>
+    </md-tabs>
+    <div>
+        <br/><br/>
+        <md-button class="md-raised" ng-click="cancelEdit()"> Back </md-button>
+    </div>
 </div>
 
 

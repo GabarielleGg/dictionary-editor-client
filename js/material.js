@@ -1,5 +1,5 @@
 
-angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph','materialApp_Ann'])
+angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph'])
 
     .config(function($routeProvider, $locationProvider) {
 
