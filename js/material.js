@@ -75,14 +75,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 return $http.post(api_url + '/api/rels', data);
             },
-
-            toggleRels : function(ids) {
-                var newData = {};
-                $http.defaults.headers.post["Content-Type"] = "application/json";
-                newData.token=sharedProperties.secToken;
-                newData.itemids = ids;
-                return $http.post(api_url + '/api/toggleRelVisibility', newData);
-            },
+            
 
             getRelVis : function(input) {
                 var data ={};
