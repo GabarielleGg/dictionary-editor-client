@@ -429,9 +429,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
         var fAuxClass = "Auxiliary class";
         var fVerbClass = "Verb class";
         var fNounClass = "Noun class";
-        var favClass = "A/V classes";
-        var fanClass = "A/N classes";
-        var fvnClass = "V/N classes";
         var fAllLayers = "All layers";
         var fLayer0 = "Layer 0";
         var fLayer1 = "Layer 1";
@@ -447,13 +444,10 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
         ];
 
         $scope.filterClassChoices = [
-            { category: 'tertiary', name: fAllClasses },
-            { category: 'primary', name: fAuxClass },
-            { category: 'primary', name: fVerbClass },
-            { category: 'primary', name: fNounClass },
-            { category: 'secondary', name: favClass },
-            { category: 'secondary', name: fanClass },
-            { category: 'secondary', name: fvnClass }
+            fAllClasses,
+            fAuxClass,
+            fVerbClass,
+            fNounClass
         ];
 
         $scope.filterLayerChoices = [
@@ -535,17 +529,11 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
 
                 var v;
                 if (selection === fAuxClass)
-                    v = 1;
+                    v = 0;
                 if (selection === fVerbClass)
-                    v = 2;
+                    v = 1;
                 if (selection === fNounClass)
-                    v = 4;
-                if (selection === favClass)
-                    v = 3;
-                if (selection === fanClass)
-                    v = 5;
-                if (selection === fvnClass)
-                    v = 6;
+                    v = 2;
 
                 if (input.CLASS == v.toString())
                     return true;
