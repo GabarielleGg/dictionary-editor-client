@@ -234,6 +234,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                         allItems[i].FR=toBeAdded.FR;
                         allItems[i].LAYER=toBeAdded.LAYER;
                         allItems[i].PARADIGM=toBeAdded.PARADIGM;
+                        allItems[i].ROOT_PARADIGM=toBeAdded.ROOT_PARADIGM;
                         allItems[i].TAILLE=toBeAdded.TAILLE;
                         allItems[i].CANONICAL=toBeAdded.CANONICAL;
                         break;
@@ -424,6 +425,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
     .controller('loadIEMLController', function($scope,  $rootScope, $location, $mdDialog, $filter, crudFactory, sharedProperties) {
 
         var fParadigms = "Paradigms";
+        var fRootParadigms = "Root Paradigms";
         var fAllTerms = "All terms";
         var fAllClasses = "All classes";
         var fAuxClass = "Auxiliary class";
@@ -440,7 +442,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
 
         $scope.filterParadigmChoices = [
             fAllTerms,
-            fParadigms
+            fParadigms,
+            fRootParadigms
         ];
 
         $scope.filterClassChoices = [
@@ -561,7 +564,10 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 if (selection === fAllTerms)
                     return true;
 
-                if (input.PARADIGM == "1")
+                if (selection === fRootParadigms && input.ROOT_PARADIGM == true)
+                    return true;
+
+                if (selection === fParadigms && input.PARADIGM == "1")
                     return true;
 
                 return false;

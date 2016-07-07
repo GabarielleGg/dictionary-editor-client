@@ -515,7 +515,6 @@ var d3 = $window.d3;
             
 
                 scope.treeData = data.tree;
-                console.dir(data.tree);
                 doUpdate();
 
             }, updateTree)); 

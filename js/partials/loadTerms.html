@@ -12,25 +12,33 @@
 		<md-input-container>
 			<label>Display</label>
 			<md-select ng-model="filterClass" ng-change="triggerFiltering('CLASS')">
-				<md-option ng-repeat="filterClass in filterClassChoices" value="{{filterClass}}">{{filterClass}}</md-option>
+				<md-option ng-repeat="filterClass in filterClassChoices" value="{{filterClass}}">
+                    {{filterClass}}
+                </md-option>
 			</md-select>
 		</md-input-container>
 		<md-input-container>
 			<label>Display</label>
 			<md-select ng-model="filterLayer" ng-change="triggerFiltering('LAYER')">
-				<md-option ng-repeat="filterLayer in filterLayerChoices" value="{{filterLayer}}">{{filterLayer}}</md-option>
+				<md-option ng-repeat="filterLayer in filterLayerChoices" value="{{filterLayer}}">
+                    {{filterLayer}}
+                </md-option>
 			</md-select>
 		</md-input-container>
 		<md-input-container>
 			<label>Language</label>
 			<md-select ng-model="filterLanguage" ng-change="triggerFiltering('LANGUAGE')">
-				<md-option ng-repeat="filterLanguage in filterLanguageChoices" value="{{filterLanguage}}">{{filterLanguage}}</md-option>
+				<md-option ng-repeat="filterLanguage in filterLanguageChoices" value="{{filterLanguage}}">
+                    {{filterLanguage}}
+                </md-option>
 			</md-select>
 		</md-input-container>
 		<md-input-container>
 			<label>Order</label>
 			<md-select ng-model="filterOrder" ng-change="triggerFiltering('ORDER')">
-				<md-option ng-repeat="filterOrder in filterOrderChoices" value="{{filterOrder}}">{{filterOrder}}</md-option>
+				<md-option ng-repeat="filterOrder in filterOrderChoices" value="{{filterOrder}}">
+                    {{filterOrder}}
+                </md-option>
 			</md-select>
 		</md-input-container>
 		<md-input-container>
