@@ -1,6 +1,28 @@
 
 angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph'])
+    .config(function ($provide) {
+        $provide.decorator('$q', function ($delegate) {
+            var defer = $delegate.defer;
+            $delegate.defer = function () {
+                var deferred = defer();
+                deferred.promise.success = function (fn) {
+                    deferred.promise.then(function(response) {
+                        fn(response.data, response.status, response.headers);
+                    });
+                    return deferred.promise;
+                };
+                deferred.promise.error = function (fn) {
+                    deferred.promise.then(null, function(response) {
+                        fn(response.data, response.status, response.headers);
+                    });
+                    return deferred.promise;
+                };
+                return deferred;
+            };
+            return $delegate;
+        });
 
+    })
     .config(function($routeProvider, $locationProvider) {
 
         $routeProvider
@@ -27,61 +49,86 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
             })
         ;
     })
-    .factory('crudFactory', function($http, sharedProperties) {
+    .factory('crudFactory', function($http, $rootScope, sharedProperties, $mdDialog, $q) {
+
+        $rootScope.showAlert = function(title, status) {
+            $mdDialog.show(
+                $mdDialog.alert()
+                    .parent(angular.element(document.body))
+                    .title(title)
+                    .content(status)
+                    .ok('Dismiss')
+            );
+        };
+
+        function check_response(response) {
+            var deferred = $q.defer();
+
+            response.success(function(data, status, headers, config){
+                if('success' in data && !data['success']) {
+                    $rootScope.showAlert('Request error', data['message'])
+                }
+                deferred.resolve({data: data, status: status, headers: headers, config: config})
+            }).error(function(data, status, headers, config) {
+                deferred.reject({data: data, status: status, headers: headers, config: config})
+            });
+
+            return deferred.promise
+        }
+
         return {
 
             create : function(newData) {
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 newData.token=sharedProperties.secToken;
-                return $http.post(api_url + '/api/newieml', newData);
+                return check_response($http.post(api_url + '/api/newieml', newData));
             },
 
             modify : function(newData) {
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 newData.token=sharedProperties.secToken;
-                return $http.post(api_url + '/api/updateieml', newData);
+                return check_response($http.post(api_url + '/api/updateieml', newData));
             },
 
             get : function() {
-                return $http.get(api_url + '/api/allieml');
+                return check_response($http.get(api_url + '/api/allieml'));
             },
 
             remove : function(id) {
-                return $http.get(api_url + '/api/remieml/' + id+'?token='+sharedProperties.secToken);
+                return check_response($http.get(api_url + '/api/remieml/' + id+'?token='+sharedProperties.secToken));
             },
 
             exists : function(input, inputType) {
-                return $http.get(api_url + '/api/exists/' + inputType + '/' + input);
+                return ($http.get(api_url + '/api/exists/' + inputType + '/' + input));
             },
 
             iemlvalid : function(input) {
                 // $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-                return $http.get(api_url + '/api/scriptparser/parse?' + 'iemltext='+encodeURIComponent(input));
+                return ($http.get(api_url + '/api/scriptparser/parse?' + 'iemltext='+encodeURIComponent(input)));
             },
 
             parsetree : function(input) {
                 // $http.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded";
-                return $http.get(api_url + '/api/scriptparser/tree?' + 'iemltext='+encodeURIComponent(input));
+                return check_response($http.get(api_url + '/api/scriptparser/tree?' + 'iemltext='+encodeURIComponent(input)));
             },
 
             iemltable : function(input) {
                 // $http.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded";
-                return $http.get(api_url + '/api/scriptparser/tables?' + 'iemltext='+encodeURIComponent(input));
+                return check_response($http.get(api_url + '/api/scriptparser/tables?' + 'iemltext='+encodeURIComponent(input)));
             },
 
             rels : function(input)  {
                 var data ={};
                 data.ieml = input;
                 $http.defaults.headers.post["Content-Type"] = "application/json";
-                return $http.post(api_url + '/api/rels', data);
+                return check_response($http.post(api_url + '/api/rels', data));
             },
             
-
             getRelVis : function(input) {
                 var data ={};
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 data.ieml = input;
-                return $http.post(api_url + '/api/getRelVisibility', data);
+                return check_response($http.post(api_url + '/api/getRelVisibility', data));
             },
 
             addRelVis : function(input, arr) {
@@ -90,7 +137,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 data.ieml = input;
                 data.relations = arr;
                 data.token=sharedProperties.secToken;
-                return $http.post(api_url + '/api/addRelVisibility', data);
+                return check_response($http.post(api_url + '/api/addRelVisibility', data));
             },
 
             remRelVis : function(input) {
@@ -98,7 +145,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 data.ieml = input;
                 data.token=sharedProperties.secToken;
-                return $http.post(api_url + '/api/remRelVisibility', data);
+                return check_response($http.post(api_url + '/api/remRelVisibility', data));
             }
         }
     })
