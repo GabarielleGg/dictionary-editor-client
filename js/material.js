@@ -368,10 +368,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 FR:$scope.frenchValue,
                 EN:$scope.englishValue,
                 PARADIGM:$scope.data.isParadigm ? "1" : "0",
-                LAYER:$scope.data.layer.toString(),
-                CLASS:$scope.data.gclass.toString(),
-                TAILLE:$scope.data.taille.toString(),
-                CANONICAL:$scope.data.canonical,
                 ID:(currIemlEntry!=undefined && currIemlEntry._id!=undefined)?currIemlEntry._id:undefined
             }
 
@@ -425,6 +421,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
     .controller('loadIEMLController', function($scope,  $rootScope, $location, $mdDialog, $filter, crudFactory, sharedProperties) {
 
         var fParadigms = "Paradigms";
+        var fSingularSequence = "Singular Sequence";
         var fRootParadigms = "Root Paradigms";
         var fAllTerms = "All terms";
         var fAllClasses = "All classes";
@@ -443,6 +440,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
         $scope.filterParadigmChoices = [
             fAllTerms,
             fParadigms,
+            fSingularSequence,
             fRootParadigms
         ];
 
@@ -537,7 +535,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                     v = 1;
                 if (selection === fNounClass)
                     v = 2;
-
                 if (input.CLASS == v.toString())
                     return true;
 
@@ -568,6 +565,9 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                     return true;
 
                 if (selection === fParadigms && input.PARADIGM == "1")
+                    return true;
+
+                if (selection === fSingularSequence && input.PARADIGM == "0")
                     return true;
 
                 return false;
