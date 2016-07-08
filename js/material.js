@@ -114,7 +114,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
 
             iemltable : function(input) {
                 // $http.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded";
-                return check_response($http.get(api_url + '/api/scriptparser/tables?' + 'iemltext='+encodeURIComponent(input)));
+                return ($http.get(api_url + '/api/scriptparser/tables?' + 'iemltext='+encodeURIComponent(input)));
             },
 
             rels : function(input)  {
