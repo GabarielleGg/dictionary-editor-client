@@ -95,7 +95,12 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
             },
 
             remove : function(id) {
-                return check_response($http.get(api_url + '/api/remieml/' + id+'?token='+sharedProperties.secToken));
+                $http.defaults.headers.post["Content-Type"] = "application/json";
+                data = {
+                    token: sharedProperties.secToken,
+                    id: id
+                };
+                return check_response($http.post(api_url + '/api/remieml', data));
             },
 
             exists : function(input, inputType) {
