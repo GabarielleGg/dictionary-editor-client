@@ -821,7 +821,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
         }
 
         $scope.crossCheck = function( input) {
-            //var lst = sharedProperties.getAllItems();
             var newTemp = $filter("filter")(lstAllIEML, {IEML:input}, true);
             return newTemp;
         };
@@ -852,25 +851,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
             }
 
             return res;
-        };
-
-        $scope.toggleRelVis = function(reltype) {
-
-            //unhide/hide all for the reltype
-
-            $scope.definitions.forEach(function(el){
-
-                var ids = [];
-
-                if (el.reltype == reltype) {
-                    el.rellist.forEach(function (singlrel){
-                        singlrel.visible=!singlrel.visible;
-                        ids.push(singlrel._id);
-                    });
-                }
-
-                return crudFactory.toggleRels(ids);
-            });
         };
 
         function orderRelationsList() {
@@ -1088,7 +1068,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                                 if (input != "") {
                                     var means = $scope.crossCheck(input);
                                     if (means != undefined && means.length > 0) {
-                                        //{ieml:"b.u.-",terms:[{lang:"FR",means:"parole"},{lang:"EN",means:"speech"}],paradigm:"0",layer:"2",class:"2"}
                                         var f = means[0].FR;
                                         var e = means[0].EN;
 
@@ -1134,6 +1113,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
         $scope.cancelEdit = function() {
             $window.history.back();
         };
+
+        init();
     })
     .controller('welcomeController', function($scope, $location) {
 
