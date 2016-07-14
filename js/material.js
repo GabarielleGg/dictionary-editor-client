@@ -910,8 +910,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 if (!a_name.exists && b_name.exists)
                     return 1;
 
-                var a_arr = $filter("filter")(lstAllIEML, {IEML:a_name.ieml}, true);
-                var b_arr = $filter("filter")(lstAllIEML, {IEML:b_name.ieml}, true);
+                var a_arr = a_name.entry;
+                var b_arr = b_name.entry;
 
                 if (a_arr == undefined || b_arr == undefined)
                     return 0;
@@ -926,19 +926,19 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 //http://stackoverflow.com/questions/979256/sorting-an-array-of-javascript-objects
                 //Compare "a" and "b" in some fashion, and return -1, 0, or 1
                 if (parseInt(a.LAYER) < parseInt(b.LAYER))
-                    return -1;
+                    return 1;
                 if (parseInt(a.LAYER) > parseInt(b.LAYER))
-                    return 1;
-                if (parseInt(a.TAILLE) < parseInt(b.TAILLE))
                     return -1;
-                if (parseInt(a.TAILLE) > parseInt(b.TAILLE))
+                if (parseInt(a.TAILLE) < parseInt(b.TAILLE))
                     return 1;
+                if (parseInt(a.TAILLE) > parseInt(b.TAILLE))
+                    return -1;
 
                 if (a.CANONICAL.length == b.CANONICAL.length) {
 
                     var i=0, len=a.CANONICAL.length;
                     for (; i<len; i++) {
-                        var comp = a.CANONICAL[i].localeCompare(b.CANONICAL[i]);
+                        var comp = b.CANONICAL[i].localeCompare(a.CANONICAL[i]);
                         if (comp == 0)
                             continue;
                         return comp;
@@ -946,7 +946,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 } else if (a.CANONICAL.length < b.CANONICAL.length) {
                     var i=0, len=a.CANONICAL.length;
                     for (; i<len; i++) {
-                        var comp = a.CANONICAL[i].localeCompare(b.CANONICAL[i]);
+                        var comp = b.CANONICAL[i].localeCompare(a.CANONICAL[i]);
                         if (comp == 0)
                             continue;
                         return comp;
@@ -954,7 +954,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 } else {
                     var i=0, len=b.CANONICAL.length;
                     for (; i<len; i++) {
-                        var comp = a.CANONICAL[i].localeCompare(b.CANONICAL[i]);
+                        var comp = b.CANONICAL[i].localeCompare(a.CANONICAL[i]);
                         if (comp == 0)
                             continue;
                         return comp;
@@ -964,12 +964,20 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 return 0;
             }
 
+            function iemlOrderInv(a_name, b_name) {
+                return -iemlOrderFunction(a_name, b_name)
+            }
+
             // sort relation names
             $scope.definitions.sort(relationsOrderFunction);
             // sort relation endpoints based on ieml order
             $scope.definitions.forEach(function(el){
-                if (el.rellist.length > 1)
-                    el.rellist.sort(iemlOrderFunction);
+                if (el.rellist.length > 1) {
+                    for(var i = 0; i< el.rellist.length; i++) {
+                        el.rellist[i].entry = $filter("filter")(lstAllIEML, {IEML: el.rellist[i].ieml}, true);
+                    }
+                    el.rellist.sort(iemlOrderFunction)
+                }
             });
         };
 
@@ -1026,24 +1034,24 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 if (parent_paradigm == "none")
                     parent_paradigm = tableTitle;
 
-                crudFactory.getRelVis(parent_paradigm).success(function(data, status){
+                // crudFactory.getRelVis(parent_paradigm).success(function(data, status){
+                //
+                //     if (data.length > 0) {
+                //         var temp_arr = data[0].viz.slice();
+                //
+                //         //remove inhibited relations
+                //         for (var i = 0; i < temp_arr.length; i++) {
+                //             for (var j = 0; j < allrels.length; j++) {
+                //                 if (allrels[j].reltype == temp_arr[i]) {
+                //                     allrels[j].visible = false;
+                //                 }
+                //             }
+                //         }
+                //     }
 
-                    if (data.length > 0) {
-                        var temp_arr = data[0].viz.slice();
-
-                        //remove inhibited relations
-                        for (var i = 0; i < temp_arr.length; i++) {
-                            for (var j = 0; j < allrels.length; j++) {
-                                if (allrels[j].reltype == temp_arr[i]) {
-                                    allrels[j].visible = false;
-                                }
-                            }
-                        }
-                    }
-
-                    $scope.definitions = allrels;
-                    orderRelationsList();
-                });
+                $scope.definitions = allrels;
+                orderRelationsList();
+                // });
             });
 
             crudFactory.iemltable(tableTitle).success(function(data) {
