@@ -38,7 +38,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 controller: 'iemlEntryEditorController',
                 templateUrl: './js/partials/editIeml.html'
             })
-            .when('/dicEdit/IEML/:IEML', {
+            .when('/dicEdit/IEML/:LANG/:IEML', {
                 controller: 'iemlDictionaryController',
                 templateUrl: './js/partials/dictionaryEdit.html',
                 reloadOnSearch: true
@@ -536,6 +536,15 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
         $scope.filterOrder = sharedProperties.filterOrderSelected?sharedProperties.filterOrderSelected:iemlOrder; //default value
         $scope.filterText = sharedProperties.filterTextSelected?sharedProperties.filterTextSelected:""; //default value
 
+        if(!('filterParadigmSelected' in sharedProperties)) {
+            sharedProperties.filterClassSelected=$scope.filterClass;
+            sharedProperties.filterLayerSelected=$scope.filterLayer;
+            sharedProperties.filterParadigmSelected=$scope.filterParadigm;
+            sharedProperties.filterLanguageSelected=$scope.filterLanguage;
+            sharedProperties.filterOrderSelected=$scope.filterOrder;
+            sharedProperties.filterTextSelected=$scope.filterText;
+        }
+
         $scope.triggerFiltering = function (selection) {
             //store selected filters in the service to preserve values
             sharedProperties.filterClassSelected=$scope.filterClass;
@@ -774,7 +783,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
             } else {
                 var toBeEdited = $scope.List[index];
                 sharedProperties.setIemlEntry(toBeEdited);
-                var earl = '/dicEdit/IEML/'+encodeURIComponent(toBeEdited.IEML);
+                var earl = '/dicEdit/IEML/' + encodeURIComponent(sharedProperties.filterLanguageSelected == 'Français' ? 'FR' : 'EN') +
+                    '/'+encodeURIComponent(toBeEdited.IEML);
                 $location.path(earl);
             }
         };
@@ -816,6 +826,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
     .controller('iemlDictionaryController', function($scope, $window, $location, $mdToast,  $routeParams, $mdDialog, $document, $filter, crudFactory, sharedProperties) {
 
         var tableTitle =  decodeURIComponent($routeParams.IEML);
+        var language = decodeURIComponent($routeParams.LANG);
+        $scope.language = language
         var previousTableTile = tableTitle;
         var lstAllIEML = sharedProperties.getAllItems();
 
@@ -848,11 +860,11 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
             res.EN = newTemp[0]?newTemp[0].EN:"none";
             res.FR = newTemp[0]?newTemp[0].FR:"none";
 
-            if (sharedProperties.filterLanguageSelected == "English") {
-                res.DISP = newTemp[0]?newTemp[0].EN:"none";
+            if (language == "FR") {
+                res.DISP = newTemp[0]?newTemp[0].FR:"none";
             }
             else {
-                res.DISP = newTemp[0]?newTemp[0].FR:"none";
+                res.DISP = newTemp[0]?newTemp[0].EN:"none";
             }
 
             return res;
