@@ -982,15 +982,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
             }
         };
 
-        //TODO  can be redesigned to always load before any view
-        function init_0() {
-            crudFactory.get().success(function(data) {
-                $scope.List = data;
-                sharedProperties.setAllItems(data);
-                lstAllIEML = sharedProperties.getAllItems();
-            });
-        };
-
         function init() {
 
             // TODO: if from bookmark, this will be undefined.
