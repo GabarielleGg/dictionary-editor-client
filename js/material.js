@@ -27,8 +27,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
 
         $routeProvider
             .when('/', {
-                controller: 'welcomeController',
-                templateUrl: './js/partials/welcome.html'
+                controller: 'loadIEMLController',
+                templateUrl: './js/partials/loadTerms.html'
             })
             .when('/loadTerms', {
                 controller: 'loadIEMLController',
