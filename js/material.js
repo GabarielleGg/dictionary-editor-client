@@ -831,7 +831,22 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
         var previousTableTile = tableTitle;
         var lstAllIEML = sharedProperties.getAllItems();
 
+        // the language selection drop-down related code
+        var lFrench = "Français";
+        var lEnglish = "English";
+        
+        $scope.displayLanguageChoices = [
+            lFrench,
+            lEnglish
+        ];
+        $scope.displayLanguage = lFrench;
+        
+
         init();
+
+        $scope.changeDisplayLanguage = function () {
+            console.log("Picked language " + $scope.displayLanguage);
+        }
 
         $scope.getParseTree= function () {
             return crudFactory.parsetree(tableTitle);

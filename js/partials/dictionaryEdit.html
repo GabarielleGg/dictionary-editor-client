@@ -2,7 +2,26 @@
 
 <div style="width: 1200px;">
 
-    <h2 align="center">{{tableTitle}}</h2>
+    <div layout="row">
+        <div flex="20">
+            <md-button class="md-raised" ng-click="cancelEdit()" > Back </md-button>
+        </div>
+        <div  flex="60" align="center">
+            <h2 align="center">{{tableTitle}}</h2>
+        </div>
+        <div flex="20" align="right">
+            <md-input-container>
+                <label>Language</label>
+                <md-select ng-model="displayLanguage" ng-change="changeDisplayLanguage()">
+                    <md-option ng-repeat="displayLanguage in displayLanguageChoices" value="{{displayLanguage}}">
+                        {{displayLanguage}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+    </div>
+
+
 
     <md-tabs md-stretch-tabs="always" md-dynamic-height="" md-border-bottom="">
         <md-tab label="DEFINITION">
@@ -38,7 +57,6 @@
                                     <td>
                                         <table>
                                             <tr> <p  align="left">{{lookupLabels(lnk.ieml).DISP}}</p></tr>
-                                            <!--tr> <p  align="left">{{lookupLabels(lnk.ieml).FR}}</p></tr-->
                                         </table>
                                     </td>
                                 </tr>
@@ -112,7 +130,6 @@
                         </div>
                     </div>
 
-                    <!--h2>{{tableError}}</h2-->
                 </div>
 
             </md-content>
