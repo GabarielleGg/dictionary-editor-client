@@ -28,19 +28,19 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
         $routeProvider
             .when('/', {
                 controller: 'loadIEMLController',
-                templateUrl: './js/partials/loadTerms.html'
+                templateUrl: './js/partials/listTerms.html'
             })
             .when('/loadTerms', {
                 controller: 'loadIEMLController',
-                templateUrl: './js/partials/loadTerms.html'
+                templateUrl: './js/partials/listTerms.html'
             })
             .when('/edit/:id', {
                 controller: 'iemlEntryEditorController',
-                templateUrl: './js/partials/editIeml.html'
+                templateUrl: './js/partials/editTerm.html'
             })
             .when('/dicEdit/IEML/:LANG/:IEML', {
                 controller: 'iemlDictionaryController',
-                templateUrl: './js/partials/dictionaryEdit.html',
+                templateUrl: './js/partials/displayTerm.html',
                 reloadOnSearch: true
             })
             .when('/graph', {
