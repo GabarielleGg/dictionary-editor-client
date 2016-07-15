@@ -827,7 +827,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
 
         var tableTitle =  decodeURIComponent($routeParams.IEML);
         var language = decodeURIComponent($routeParams.LANG);
-        $scope.language = language
+        $scope.language = language;
         var previousTableTile = tableTitle;
         var lstAllIEML = sharedProperties.getAllItems();
 
@@ -839,18 +839,21 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
             lFrench,
             lEnglish
         ];
-        $scope.displayLanguage = lFrench;
+        $scope.displayLanguage = language=='FR' ? lFrench: lEnglish;
         
 
         init();
 
         $scope.changeDisplayLanguage = function () {
-            console.log("Picked language " + $scope.displayLanguage);
-        }
+            sharedProperties.filterLanguageSelected = $scope.displayLanguage;
+            var earl = '/dicEdit/IEML/' + encodeURIComponent(sharedProperties.filterLanguageSelected == 'Français' ? 'FR' : 'EN') +
+                '/'+encodeURIComponent(tableTitle);
+            $location.path(earl);
+        };
 
         $scope.getParseTree= function () {
             return crudFactory.parsetree(tableTitle);
-        }
+        };
 
         $scope.crossCheck = function( input) {
             var newTemp = $filter("filter")(lstAllIEML, {IEML:input}, true);
