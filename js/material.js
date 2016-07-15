@@ -1,5 +1,5 @@
 
-angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph'])
+angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph', 'ngStorage'])
     .config(function ($provide) {
         $provide.decorator('$q', function ($delegate) {
             var defer = $delegate.defer;
@@ -80,13 +80,13 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
 
             create : function(newData) {
                 $http.defaults.headers.post["Content-Type"] = "application/json";
-                newData.token=sharedProperties.secToken;
+                newData.token=$rootScope.token.value;
                 return check_response($http.post(api_url + '/api/newieml', newData));
             },
 
             modify : function(newData) {
                 $http.defaults.headers.post["Content-Type"] = "application/json";
-                newData.token=sharedProperties.secToken;
+                newData.token=$rootScope.token.value;
                 return check_response($http.post(api_url + '/api/updateieml', newData));
             },
 
@@ -97,7 +97,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
             remove : function(id) {
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 data = {
-                    token: sharedProperties.secToken,
+                    token: $rootScope.token.value,
                     id: id
                 };
                 return check_response($http.post(api_url + '/api/remieml', data));
@@ -141,7 +141,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 data.ieml = input;
                 data.relations = arr;
-                data.token=sharedProperties.secToken;
+                data.token=$rootScope.token.value;
                 return check_response($http.post(api_url + '/api/addRelVisibility', data));
             },
 
@@ -149,14 +149,14 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 var data ={};
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 data.ieml = input;
-                data.token=sharedProperties.secToken;
+                data.token=$rootScope.token.value;
                 return check_response($http.post(api_url + '/api/remRelVisibility', data));
             },
 
             updateRelations : function () {
                 var data ={};
                 $http.defaults.headers.post["Content-Type"] = "application/json";
-                data.token=sharedProperties.secToken;
+                data.token=$rootScope.token.value;
                 return check_response($http.post(api_url + '/api/updaterelations', data));
             }
         }
@@ -242,7 +242,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
             }
         };
     })
-    .service('sharedProperties', function ($rootScope) {
+    .service('sharedProperties', function ($rootScope, $localStorage) {
 
         // will determine how to configure controller
         var EntryEditType = null;
@@ -251,6 +251,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
         // local copy of DB
         var allItems;
 
+        $rootScope.token = $localStorage.$default({value:''});
 
         return {
 
@@ -476,6 +477,14 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
 
             $window.history.back();
         };
+
+        $scope.updatingStatus = '';
+        $scope.updateRelations = function() {
+            $scope.updatingStatus = 'Updating, this operation will take 2-3 min.';
+            crudFactory.updateRelations().success(function (data) {
+                $scope.updatingStatus = '';
+            })
+        }
     })
     .controller('loadIEMLController', function($scope,  $rootScope, $location, $mdDialog, $filter, crudFactory, sharedProperties) {
 
@@ -1177,7 +1186,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
             $location.path(earl);
         };
     })
-    .controller('mainMenuController', function($scope, $location, $mdDialog, sharedProperties) {
+    .controller('mainMenuController', function($rootScope, $scope, $location, $mdDialog, sharedProperties) {
 
         $scope.editEntry = function ( index ) {
             sharedProperties.setEntryEditType(sharedProperties.FromListNew);
@@ -1185,7 +1194,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
         };
 
         $scope.isShowAddNew = function () {
-            return (sharedProperties.secToken !== "undefined");
+            return ($rootScope.token.value !== "");
         };
 
         $scope.showSignIn = function(ev) {
@@ -1202,7 +1211,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
             });
         };
 
-        function DialogController($scope, $mdDialog, $http, sharedProperties) {
+        function DialogController($scope, $mdDialog, $http, sharedProperties, $rootScope) {
 
             $scope.error = undefined;
             $scope.dataLoading=false;
@@ -1221,7 +1230,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 }).then(function(response) {
                     $scope.dataLoading=false;
                     if (response.data.success) {
-                        sharedProperties.secToken=response.data.token;
+                        // sharedProperties.secToken=response.data.token;
+                        $rootScope.token.value = response.data.token;
                         $mdDialog.cancel();
                     } else {
                         $scope.error = response.data.message;
