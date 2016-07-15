@@ -24,26 +24,35 @@
 <div ng-controller="mainMenuController">
 	<md-content>
 		<md-toolbar>
-			<div class="md-toolbar-tools">
-				<div>
-					<i class="material-icons">language</i>
+			<div class="md-toolbar-tools" layout="row">
+
+				<div flex="20">
+					<a href="#/">
+						<md-button class="md-fab" aria-label="Home">
+							<i class="material-icons">view_list</i>
+						</md-button>
+					</a>
+
+					<md-button class="md-fab " title="Add new IEML item" ng-show="isShowAddNew()" ng-click="editEntry(-1)">
+						<i class="material-icons">add</i>
+					</md-button>
 				</div>
 
-				<h2>
-					<span class="md-title" style="padding-left:1em; padding-right:2em" >quickIEMLeditor</span>
-				</h2>
+				<div flex="70" align="center">
+					<h2 >
+						<span class="md-title" style="padding-left:1em; padding-right:2em" >IEML Dictionary Editor</span>
+					</h2>
+				</div>
 
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" style="fill:rgba(255,255,255,0.87)"><path d="M20 6v12h2V6h-2z"></path></svg>
+				<div flex="10" align="right">
+					<md-button class="md-fab md-primary md-hue-2" title="Sign In"  ng-click="showSignIn($event)">
+						<i class="material-icons">lock</i>
+					</md-button>
+				</div>
 
-				<md-button class="md-icon-button" title="Add new IEML item" ng-show="isShowAddNew()" ng-click="editEntry(-1)">
-					<i class="material-icons">add</i>
-				</md-button>
 
-				<span flex></span>
 
-				<md-button class="md-icon-button" title="Sign In"  ng-click="showSignIn($event)">
-					<i class="material-icons">lock open</i>
-				</md-button>
+
 
 
 			</div>

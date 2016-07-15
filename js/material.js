@@ -1175,7 +1175,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
         };
 
         $scope.isShowAddNew = function () {
-            return ($location.$$path.indexOf("loadTerms")>0);
+            return (sharedProperties.secToken !== "undefined");
         };
 
         $scope.showSignIn = function(ev) {
