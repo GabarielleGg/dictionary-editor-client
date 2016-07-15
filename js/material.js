@@ -151,6 +151,13 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph']
                 data.ieml = input;
                 data.token=sharedProperties.secToken;
                 return check_response($http.post(api_url + '/api/remRelVisibility', data));
+            },
+
+            updateRelations : function () {
+                var data ={};
+                $http.defaults.headers.post["Content-Type"] = "application/json";
+                data.token=sharedProperties.secToken;
+                return check_response($http.post(api_url + '/api/updaterelations', data));
             }
         }
     })
