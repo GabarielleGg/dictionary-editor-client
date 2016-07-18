@@ -46,15 +46,9 @@
 
 				<div flex="10" align="right">
 					<md-button class="md-fab md-primary md-hue-2" title="Sign In"  ng-click="showSignIn($event)">
-						<i class="material-icons">lock</i>
+						<i class="material-icons">{{isShowAddNew() ? 'done': 'lock'}}</i>
 					</md-button>
 				</div>
-
-
-
-
-
-
 			</div>
 
 

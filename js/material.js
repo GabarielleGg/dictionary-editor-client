@@ -1161,7 +1161,12 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         };
 
         $scope.cancelEdit = function() {
-            $window.history.back();
+            if($window.history.length == 0) {
+                $location.path('/loadTerms');
+            } else {
+                $window.history.back();
+            }
+
         };
 
         init();
