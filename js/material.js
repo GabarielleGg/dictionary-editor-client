@@ -1048,21 +1048,29 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
             sharedProperties.setIemlEntry(null);
 
-            crudFactory.get().success(function(data) {
-                $scope.List = data;
-                sharedProperties.setAllItems(data);
+            function callback() {
                 lstAllIEML = sharedProperties.getAllItems();
                 $scope.tableTitle = tableTitle;
                 // get other info from entry
-                $scope.DefinedEntry = $filter("filter")(lstAllIEML, {IEML:tableTitle}, true)[0];
-                $scope.DefinedEntryClass = "n/a"
+                $scope.DefinedEntry = $filter("filter")(lstAllIEML, {IEML: tableTitle}, true)[0];
+                $scope.DefinedEntryClass = "n/a";
                 if ($scope.DefinedEntry.CLASS == "0")
                     $scope.DefinedEntryClass = "Auxilliary";
                 if ($scope.DefinedEntry.CLASS == "1")
                     $scope.DefinedEntryClass = "Verb";
                 if ($scope.DefinedEntry.CLASS == "2")
                     $scope.DefinedEntryClass = "Noun";
-            });
+            }
+
+            if(sharedProperties.getAllItems() == undefined) {
+                crudFactory.get().success(function (data) {
+                    $scope.List = data;
+                    sharedProperties.setAllItems(data);
+                    callback()
+                });
+            } else {
+                callback()
+            }
 
             crudFactory.rels(tableTitle).success(function(allrels) {
 
