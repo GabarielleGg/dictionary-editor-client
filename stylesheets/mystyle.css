@@ -70,8 +70,6 @@
   background: #f5f5f5; }
 .gridListDynamicTiles .green {
   background: #b9f6ca; }
-.gridListDynamicTiles .yellow {
-  background: #ffff8d; }
 .gridListDynamicTiles .blue {
   background: #84ffff; }
 .gridListDynamicTiles .darkBlue {
@@ -85,8 +83,24 @@
 .gridListDynamicTiles .red {
   background: #ff8a80; }
 .gridListDynamicTiles .pink {
-  background: #ff80ab; }  
-  
+  background: #ff80ab; }
+
+.gridListDynamicTiles .black {
+    background: #e4e4e4; }
+
+.gridListDynamicTiles .yellow {
+    background: #dad600; }
+.gridListDynamicTiles .light-yellow {
+    background: #fffb03; }
+.gridListDynamicTiles .orange {
+    background: #77b9d1; }
+.gridListDynamicTiles .light-orange {
+    background: #97e6ff; }
+.gridListDynamicTiles .cyan {
+    background: #ba5f53; }
+.gridListDynamicTiles .light-cyan {
+    background: #ff8271; }
+
 /* if the text is too long in the table's cells ...*/ 
 .gridListDynamicTiles .md-list-item-text p {
       /*text-overflow: ellipsis;
