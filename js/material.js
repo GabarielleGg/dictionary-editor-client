@@ -857,9 +857,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         ];
         $scope.displayLanguage = language=='FR' ? lFrench: lEnglish;
         
-
-        init();
-
         $scope.changeDisplayLanguage = function () {
             sharedProperties.filterLanguageSelected = $scope.displayLanguage;
             var earl = '/dicEdit/IEML/' + encodeURIComponent(sharedProperties.filterLanguageSelected == 'Français' ? 'FR' : 'EN') +
