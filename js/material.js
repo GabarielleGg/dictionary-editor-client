@@ -318,7 +318,9 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             // store locally list of all ieml in DB
             setAllItems: function(value) {
                 allItems = value;
-            }
+            },
+
+            defaultSelected: 1
         };
     })
     .controller('iemlEntryEditorController', function($scope,  $rootScope, $location, $window, crudFactory, sharedProperties) {
@@ -844,6 +846,9 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         var tableTitle =  decodeURIComponent($routeParams.IEML);
         var language = decodeURIComponent($routeParams.LANG);
         $scope.language = language;
+
+        $scope.sh = sharedProperties;
+
         var previousTableTile = tableTitle;
         var lstAllIEML = sharedProperties.getAllItems();
 
@@ -856,7 +861,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             lEnglish
         ];
         $scope.displayLanguage = language=='FR' ? lFrench: lEnglish;
-        
+
         $scope.changeDisplayLanguage = function () {
             sharedProperties.filterLanguageSelected = $scope.displayLanguage;
             var earl = '/dicEdit/IEML/' + encodeURIComponent(sharedProperties.filterLanguageSelected == 'Français' ? 'FR' : 'EN') +
