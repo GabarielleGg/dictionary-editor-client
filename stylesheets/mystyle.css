@@ -88,18 +88,18 @@
 .gridListDynamicTiles .black {
     background: #e4e4e4; }
 
-.gridListDynamicTiles .yellow {
-    background: #dad600; }
-.gridListDynamicTiles .light-yellow {
-    background: #fffb03; }
-.gridListDynamicTiles .orange {
-    background: #77b9d1; }
-.gridListDynamicTiles .light-orange {
-    background: #97e6ff; }
-.gridListDynamicTiles .cyan {
-    background: #ba5f53; }
-.gridListDynamicTiles .light-cyan {
-    background: #ff8271; }
+.gridListDynamicTiles .noun {
+    background: #bef0ff; }
+.gridListDynamicTiles .header-noun {
+    background: #87cdff; }
+.gridListDynamicTiles .verb {
+    background: #ffd9b1; }
+.gridListDynamicTiles .header-verb {
+    background: #ffb57c; }
+.gridListDynamicTiles .auxiliary {
+    background: #fff093; }
+.gridListDynamicTiles .header-auxiliary {
+    background: #ffd635; }
 
 /* if the text is too long in the table's cells ...*/ 
 .gridListDynamicTiles .md-list-item-text p {
