@@ -101,6 +101,10 @@
 .gridListDynamicTiles .header-auxiliary {
     background: #ffd635; }
 
+md-tab-item {
+    max-width:none !important;
+}
+
 /* if the text is too long in the table's cells ...*/ 
 .gridListDynamicTiles .md-list-item-text p {
       /*text-overflow: ellipsis;
