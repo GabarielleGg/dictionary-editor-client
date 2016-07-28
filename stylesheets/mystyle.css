@@ -89,17 +89,17 @@
     background: #e4e4e4; }
 
 .gridListDynamicTiles .noun {
-    background: #bef0ff; }
+    background: #ded7ff; }
 .gridListDynamicTiles .header-noun {
-    background: #87cdff; }
+    background: #c4c0ff; }
 .gridListDynamicTiles .verb {
-    background: #ffd9b1; }
+    background: #ffe5d7; }
 .gridListDynamicTiles .header-verb {
-    background: #ffb57c; }
+    background: #ffd8c0; }
 .gridListDynamicTiles .auxiliary {
-    background: #fff093; }
+    background: #fff1bc; }
 .gridListDynamicTiles .header-auxiliary {
-    background: #ffd635; }
+    background: #fff38e; }
 
 md-tab-item {
     max-width:none !important;
