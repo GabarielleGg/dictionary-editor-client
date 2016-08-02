@@ -31,8 +31,14 @@
                     <p align="left"><b>{{tableTitle}}</b> {{lookupLabels(tableTitle).DISP}}</p>
                     <p align="left"><b>Class</b> {{DefinedEntryClass}}</p>
                     <p align="left"><b>Layer</b> {{DefinedEntry.LAYER}}</p>
-                    <p align="left"><b>Cardinality</b> {{DefinedEntry.TAILLE}}</p>
-                    <p align="left"><b>Is a Paradigm</b> {{DefinedEntry.PARADIGM}}</p>
+                    <p align="left">
+                        <b>Cardinality</b> {{DefinedEntry.TAILLE}}
+                        <b ng-show="DefinedEntry.PARADIGM == '0'">(Singular sequence)</b>
+                        <b ng-show="DefinedEntry.PARADIGM == '1'">(Paradigm)</b></p>
+                    <p align="left" ng-show="DefinedEntry.PARADIGM == '1'">
+                        <b>Table rank </b> {{DefinedEntry.RANK}}
+                        <!--<b ng-show="DefinedEntry.RANK == 1">(Root paradigm)</b>-->
+                    </p>
                 </div>
 
                 <br/>

@@ -353,6 +353,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             if (idx > -1) list.splice(idx, 1);
             else list.push(item);
         };
+
         $scope.exists = function (item, list) {
             return list.indexOf(item) > -1;
         };
@@ -412,11 +413,12 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             $scope.englishValue = binding.EN;
             $scope.doNotValidate = true; // do not validate in some cases since ieml exists
             $scope.dirtyInputs = [];
-            $scope.data.isParadigm = binding.PARADIGM == "1" ? true : false;
+            $scope.data.isParadigm = binding.PARADIGM == "1";
             $scope.data.layer = binding.LAYER;
             $scope.data.gclass = binding.CLASS;
             $scope.data.taille = binding.TAILLE;
             $scope.data.canonical = binding.CANONICAL;
+
         };
 
         $scope.cancelEdit = function() {
