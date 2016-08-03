@@ -1057,6 +1057,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 $scope.tableTitle = tableTitle;
                 // get other info from entry
                 $scope.DefinedEntry = $filter("filter")(lstAllIEML, {IEML: tableTitle}, true)[0];
+
                 $scope.DefinedEntryClass = "n/a";
                 if ($scope.DefinedEntry.CLASS == "0")
                     $scope.DefinedEntryClass = "Auxilliary";
@@ -1121,6 +1122,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     $scope.tableError = data.exception;
                 } else {
                     var i=0, leni=$scope.fakeReply.Tables.length;
+                    $scope.DefinedEntry.MULTIPLE_TABLES = leni != 1;
                     for (; i<leni; i++) {
                         var j=0, lenj=$scope.fakeReply.Tables[i].table.length;
                         for (; j<lenj; j++) {

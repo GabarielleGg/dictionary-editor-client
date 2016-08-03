@@ -36,7 +36,7 @@
                         <b ng-show="DefinedEntry.PARADIGM == '0'">(Singular sequence)</b>
                         <b ng-show="DefinedEntry.PARADIGM == '1'">(Paradigm)</b></p>
                     <p align="left" ng-show="DefinedEntry.PARADIGM == '1'">
-                        <b>Table rank </b> {{DefinedEntry.RANK}}
+                        <b>Table{{DefinedEntry.MULTIPLE_TABLES ? 's' : ''}} rank </b> {{DefinedEntry.RANK}}
                         <!--<b ng-show="DefinedEntry.RANK == 1">(Root paradigm)</b>-->
                     </p>
                 </div>
