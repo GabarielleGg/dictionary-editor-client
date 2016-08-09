@@ -136,22 +136,22 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 return check_response($http.post(api_url + '/api/getRelVisibility', data));
             },
 
-            addRelVis : function(input, arr) {
-                var data ={};
-                $http.defaults.headers.post["Content-Type"] = "application/json";
-                data.ieml = input;
-                data.relations = arr;
-                data.token=$rootScope.token.value;
-                return check_response($http.post(api_url + '/api/addRelVisibility', data));
-            },
-
-            remRelVis : function(input) {
-                var data ={};
-                $http.defaults.headers.post["Content-Type"] = "application/json";
-                data.ieml = input;
-                data.token=$rootScope.token.value;
-                return check_response($http.post(api_url + '/api/remRelVisibility', data));
-            },
+            // addRelVis : function(input, arr) {
+            //     var data ={};
+            //     $http.defaults.headers.post["Content-Type"] = "application/json";
+            //     data.ieml = input;
+            //     data.relations = arr;
+            //     data.token=$rootScope.token.value;
+            //     return check_response($http.post(api_url + '/api/addRelVisibility', data));
+            // },
+            //
+            // remRelVis : function(input) {
+            //     var data ={};
+            //     $http.defaults.headers.post["Content-Type"] = "application/json";
+            //     data.ieml = input;
+            //     data.token=$rootScope.token.value;
+            //     return check_response($http.post(api_url + '/api/remRelVisibility', data));
+            // },
 
             updateRelations : function () {
                 var data ={};
@@ -254,7 +254,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         $rootScope.token = $localStorage.$default({value:''});
 
         return {
-
+            updating : false,
+            updatingStatus : '',
             // 'static' variables for 'sharedProperties'
             FromListNew : "FromListNew",
             FromListUpdate : "FromListUpdate",
@@ -374,8 +375,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 else if (configOption === sharedProperties.FromListUpdate) {
                     bindValues(currIemlEntry); // ieml exists, just update it
                     crudFactory.getRelVis(currIemlEntry.IEML).success(function(data, status){
-                        if (data.length > 0)
-                            $scope.enableRelationsArraySelected = data[0].viz.slice();
+                        $scope.enableRelationsArraySelected = data.viz.slice();
                     });
                 }
                 else if (configOption === sharedProperties.FromTableNew) {
@@ -383,16 +383,14 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     $scope.readOnly  = true;  // do not allow ieml editing
                     sharedProperties.tileIEML = null; // clean-up
                     crudFactory.getRelVis($scope.iemlValue).success(function(data, status){
-                        if (data.length > 0)
-                            $scope.enableRelationsArraySelected = data[0].viz.slice();
+                        $scope.enableRelationsArraySelected = data.viz.slice();
                     });
                 }
                 else if (configOption === sharedProperties.FromTableUpdate) {
                     bindValues(currIemlEntry); // ieml exists, just update it
                     $scope.readOnly  = true; // do not allow ieml editing
                     crudFactory.getRelVis(currIemlEntry.IEML).success(function(data, status){
-                        if (data.length > 0)
-                            $scope.enableRelationsArraySelected = data[0].viz.slice();
+                        $scope.enableRelationsArraySelected = data.viz.slice();
                     });
                 }
 
@@ -400,7 +398,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 sharedProperties.setEntryEditType(null);
             }
             else {
-                debugger;
+                $location.path('/');
             }
         };
 
@@ -432,21 +430,15 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 FR:$scope.frenchValue,
                 EN:$scope.englishValue,
                 PARADIGM:$scope.data.isParadigm ? "1" : "0",
-                ID:(currIemlEntry!=undefined && currIemlEntry._id!=undefined)?currIemlEntry._id:undefined
-            }
+                ID:(currIemlEntry!=undefined && currIemlEntry._id!=undefined)?currIemlEntry._id:undefined,
+                INHIBITS: $scope.enableRelationsArraySelected
+            };
 
             if (toBeAdded.ID==undefined) {
 
                 crudFactory.create(toBeAdded).success(function(data) {
 
                     sharedProperties.addToIEMLLIST(data[0]);
-
-                    if (toBeAdded.PARADIGM=="1" && $scope.enableRelationsArraySelected.length > 0) {
-                        crudFactory.addRelVis(toBeAdded.IEML, $scope.enableRelationsArraySelected);
-                    }
-                    else {
-                        crudFactory.remRelVis(toBeAdded.IEML)
-                    }
 
                 }).error(function(data, status, headers, config) {
 
@@ -462,13 +454,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
                     sharedProperties.updateIEMLLIST(toBeAdded);
 
-                    if (toBeAdded.PARADIGM=="1" && $scope.enableRelationsArraySelected.length > 0) {
-                        crudFactory.addRelVis(toBeAdded.IEML, $scope.enableRelationsArraySelected);
-                    }
-                    else {
-                        crudFactory.remRelVis(toBeAdded.IEML)
-                    }
-
                 }).error(function(data, status, headers, config) {
 
                     if (!data.success) {
@@ -482,12 +467,15 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             $window.history.back();
         };
 
-        $scope.updatingStatus = '';
         $scope.updateRelations = function() {
-            $scope.updatingStatus = 'Updating, this operation will take 2-3 min.';
+            sharedProperties.updatingStatus = 'Updating the terms relations, this operation takes ~3 min.';
+            sharedProperties.updating = true;
+
             crudFactory.updateRelations().success(function (data) {
-                $scope.updatingStatus = '';
-            })
+                sharedProperties.updatingStatus = '';
+                sharedProperties.updating = false
+            });
+            $location.path('/');
         }
     })
     .controller('loadIEMLController', function($scope,  $rootScope, $location, $mdDialog, $filter, crudFactory, sharedProperties) {
@@ -1049,6 +1037,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
             // TODO: if from bookmark, this will be undefined.
             $scope.filterLanguage = sharedProperties.filterLanguageSelected;
+            $scope.DefinedEntry = {};
 
             sharedProperties.setIemlEntry(null);
 
@@ -1206,6 +1195,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         };
     })
     .controller('mainMenuController', function($rootScope, $scope, $location, $mdDialog, sharedProperties) {
+        $scope.sharedProperties = sharedProperties;
 
         $scope.editEntry = function ( index ) {
             sharedProperties.setEntryEditType(sharedProperties.FromListNew);
