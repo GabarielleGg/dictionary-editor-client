@@ -136,23 +136,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 return check_response($http.post(api_url + '/api/getRelVisibility', data));
             },
 
-            // addRelVis : function(input, arr) {
-            //     var data ={};
-            //     $http.defaults.headers.post["Content-Type"] = "application/json";
-            //     data.ieml = input;
-            //     data.relations = arr;
-            //     data.token=$rootScope.token.value;
-            //     return check_response($http.post(api_url + '/api/addRelVisibility', data));
-            // },
-            //
-            // remRelVis : function(input) {
-            //     var data ={};
-            //     $http.defaults.headers.post["Content-Type"] = "application/json";
-            //     data.ieml = input;
-            //     data.token=$rootScope.token.value;
-            //     return check_response($http.post(api_url + '/api/remRelVisibility', data));
-            // },
-
             updateRelations : function () {
                 var data ={};
                 $http.defaults.headers.post["Content-Type"] = "application/json";
@@ -636,10 +619,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 if (selection === fParadigms && input.PARADIGM == "1")
                     return true;
 
-                if (selection === fSingularSequence && input.PARADIGM == "0")
-                    return true;
-
-                return false;
+                return selection === fSingularSequence && input.PARADIGM == "0";
             }
         };
 
@@ -648,7 +628,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
             function order(predicate, reverse) {
                 $scope.List = orderBy($scope.List, predicate, reverse);
-            };
+            }
 
             function iemlOrderFunction(a, b){
                 //http://www.javascriptkit.com/javatutors/arraysort.shtml
@@ -663,34 +643,22 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 if (parseInt(a.TAILLE) > parseInt(b.TAILLE))
                     return 1;
 
-                if (a.CANONICAL.length == b.CANONICAL.length) {
+                for(var i = 0; i < Math.min(a.CANONICAL.length, b.CANONICAL.length); i++) {
+                    if(a.CANONICAL[0].charCodeAt(i) == b.CANONICAL[0].charCodeAt(i))
+                        continue;
 
-                    var i=0, len=a.CANONICAL.length;
-                    for (; i<len; i++) {
-                        var comp = a.CANONICAL[i].localeCompare(b.CANONICAL[i]);
-                        if (comp == 0)
-                            continue;
-                        return comp;
-                    }
-                } else if (a.CANONICAL.length < b.CANONICAL.length) {
-                    var i=0, len=a.CANONICAL.length;
-                    for (; i<len; i++) {
-                        var comp = a.CANONICAL[i].localeCompare(b.CANONICAL[i]);
-                        if (comp == 0)
-                            continue;
-                        return comp;
-                    }
-                } else {
-                    var i=0, len=b.CANONICAL.length;
-                    for (; i<len; i++) {
-                        var comp = a.CANONICAL[i].localeCompare(b.CANONICAL[i]);
-                        if (comp == 0)
-                            continue;
-                        return comp;
-                    }
+                    if(a.CANONICAL[0].charCodeAt(i) > b.CANONICAL[0].charCodeAt(i))
+                        return 1;
+                    else
+                        return -1;
+
                 }
-
-                return 0;
+                if(a.CANONICAL.length == b.CANONICAL.length)
+                    return 0;
+                else if(a.CANONICAL.length > b.CANONICAL.length)
+                    return 1;
+                else
+                    return -1;
             }
 
             if ($scope.filterOrder === iemlOrder) {
@@ -712,6 +680,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             crudFactory.get().success(function(data) {
                 $scope.List = data;
                 orderList();
+                console.log($scope.List.slice(0, 10));
                 sharedProperties.setAllItems($scope.List);
             });
         };
