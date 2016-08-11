@@ -76,7 +76,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             return deferred.promise
         }
 
-        return {
+
+        crud_factory = {
 
             create : function(newData) {
                 $http.defaults.headers.post["Content-Type"] = "application/json";
@@ -141,8 +142,23 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 data.token=$rootScope.token.value;
                 return check_response($http.post(api_url + '/api/updaterelations', data));
+            },
+
+            getUpdateStatus : function () {
+                return $http.get(api_url + '/api/update_status');
             }
-        }
+        };
+
+
+        shared_properties.checkUpdateStatus = function() {
+            crud_factory.getUpdateStatus().success(function (data) {
+                shared_properties.updating = !data.free
+            })
+        };
+
+        setInterval(shared_properties.checkUpdateStatus, 6000);
+
+        return crud_factory
     })
     .directive('exists', function($q, $timeout, $http, crudFactory) {
         return {
@@ -236,9 +252,12 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
         $rootScope.token = $localStorage.$default({value:''});
 
-        return {
+
+
+        shared_properties = {
             updating : false,
             updatingStatus : '',
+
             // 'static' variables for 'sharedProperties'
             FromListNew : "FromListNew",
             FromListUpdate : "FromListUpdate",
@@ -306,11 +325,14 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
             defaultSelected: 1
         };
+
+        return shared_properties
     })
     .controller('iemlEntryEditorController', function($scope,  $rootScope, $location, $window, crudFactory, sharedProperties) {
 
         var currIemlEntry = null;
 
+        $scope.sharedProperties = sharedProperties;
         $scope.data = {};
         $scope.data.isParadigm = false;
         $scope.data.layer = 'n/a';
@@ -449,17 +471,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
             $window.history.back();
         };
-
-        $scope.updateRelations = function() {
-            sharedProperties.updatingStatus = 'Updating the terms relations, this operation takes ~3 min.';
-            sharedProperties.updating = true;
-
-            crudFactory.updateRelations().success(function (data) {
-                sharedProperties.updatingStatus = '';
-                sharedProperties.updating = false
-            });
-            $location.path('/');
-        }
     })
     .controller('loadIEMLController', function($scope,  $rootScope, $location, $mdDialog, $filter, crudFactory, sharedProperties) {
 
@@ -680,7 +691,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             crudFactory.get().success(function(data) {
                 $scope.List = data;
                 orderList();
-                console.log($scope.List.slice(0, 10));
                 sharedProperties.setAllItems($scope.List);
             });
         };
@@ -1163,7 +1173,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             $location.path(earl);
         };
     })
-    .controller('mainMenuController', function($rootScope, $scope, $location, $mdDialog, sharedProperties) {
+    .controller('mainMenuController', function($rootScope, $scope, $location, $mdDialog, sharedProperties, crudFactory) {
         $scope.sharedProperties = sharedProperties;
 
         $scope.editEntry = function ( index ) {
@@ -1174,6 +1184,16 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         $scope.isShowAddNew = function () {
             return ($rootScope.token.value !== "");
         };
+
+
+        $scope.updateRelations = function() {
+            sharedProperties.updating = true;
+
+            crudFactory.updateRelations().success(function (data) {
+                sharedProperties.updating = false
+            });
+            $location.path('/');
+        }
 
         $scope.showSignIn = function(ev) {
             $mdDialog.show({
