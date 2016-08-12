@@ -443,7 +443,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
                 crudFactory.create(toBeAdded).success(function(data) {
 
-                    sharedProperties.addToIEMLLIST(data[0]);
+                    sharedProperties.addToIEMLLIST(data['added']);
 
                 }).error(function(data, status, headers, config) {
 
