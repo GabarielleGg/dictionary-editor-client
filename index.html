@@ -46,9 +46,10 @@
 							   'Updating the terms relations, this operation takes ~3 min.'}}"
 							   ng-show="isShowAddNew()"
 							   ng-click="!sharedProperties.updating ? updateRelations(): null">
-						<i class="material-icons" ng-show="!sharedProperties.updating">autorenew</i>
 
-						<i class="material-icons spin" ng-show="sharedProperties.updating">autorenew</i>
+						<i class="material-icons" ng-class="{spin: sharedProperties.updating}">autorenew</i>
+
+						<!--<i class="material-icons spin" ng-show="sharedProperties.updating">autorenew</i>-->
 					</md-button>
 
 				</div>
