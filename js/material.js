@@ -416,7 +416,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             $scope.englishValue = binding.EN;
             $scope.doNotValidate = true; // do not validate in some cases since ieml exists
             $scope.dirtyInputs = [];
-            $scope.data.isParadigm = binding.PARADIGM == "1";
+            $scope.data.isParadigm = binding.ROOT_PARADIGM;
             $scope.data.layer = binding.LAYER;
             $scope.data.gclass = binding.CLASS;
             $scope.data.taille = binding.TAILLE;
