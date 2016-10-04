@@ -152,7 +152,10 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
         shared_properties.checkUpdateStatus = function() {
             crud_factory.getUpdateStatus().success(function (data) {
-                shared_properties.updating = !data.free
+                shared_properties.updating = !data.free;
+                if('error_message' in data) {
+                    $rootScope.showAlert('Relation update error', data['error_message'])
+                }
             })
         };
 
