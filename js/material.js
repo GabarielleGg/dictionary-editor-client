@@ -1188,6 +1188,9 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             return ($rootScope.token.value !== "");
         };
 
+        delete_token = function() {
+            $rootScope.token.value = "";
+        };
 
         $scope.updateRelations = function() {
             sharedProperties.updating = true;
@@ -1196,33 +1199,35 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 sharedProperties.updating = false
             });
             $location.path('/');
-        }
+        };
 
         $scope.showSignIn = function(ev) {
-            $mdDialog.show({
-                controller: DialogController,
-                templateUrl: 'js/templates/dialog1.tmpl.html',
-                parent: angular.element(document.body),
-                targetEvent: ev,
-                clickOutsideToClose:true
-            }).then(function(answer) {
-                $scope.status = 'You said the information was "' + answer + '".';
-            }, function() {
-                $scope.status = 'You cancelled the dialog.';
-            });
+            if($scope.isShowAddNew()) {
+                delete_token()
+            } else {
+                $mdDialog.show({
+                    controller: DialogController,
+                    templateUrl: 'js/templates/dialog1.tmpl.html',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose: true
+                });
+            }
         };
 
         function DialogController($scope, $mdDialog, $http, sharedProperties, $rootScope) {
 
             $scope.error = undefined;
-            $scope.dataLoading=false;
+            $scope.dataLoading = false;
             $scope.formData = {};
-            $scope.cancel = function() {
+            
+            $scope.cancel = function($event) {
+                $event.preventDefault();
                 $mdDialog.cancel();
             };
 
             $scope.login = function(form) {
-                $scope.dataLoading=true;
+                $scope.dataLoading = true;
                 $http({
                     method  : 'POST',
                     url     : api_url + '/api/client/authenticate',
