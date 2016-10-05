@@ -237,6 +237,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                             scope.data.canonical = data.canonical;
                             scope.data.rootIntersections = data.rootIntersections;
                             scope.data.containsSize = data.containsSize;
+                            scope.data.factorization = data.factorization;
 
                             var i = data.rootIntersections.indexOf(modelValue);
                             if(i > -1) {
@@ -356,6 +357,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         $scope.data.containsSize = 0;
         $scope.formTitle = 'Adding new entry';
         $scope.doNotValidate = false;
+        $scope.data.factorization = '';
 
         var AscSub = "Ancestors in substance";
         var AscAtt = "Ancestors in attribute";
@@ -371,6 +373,9 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         $scope.enableRelationsArray = [AscSub, AscAtt, AscMod, DscSub, DscAtt, DscMod, GermainJumeau, GermainOpposes, GermainAssocies, GermainCroises];
         $scope.enableRelationsArraySelected = [];
 
+        $scope.updateIeml = function () {
+            $scope.iemlValue = $scope.data.factorization
+        };
 
         $scope.rootConditions = function () {
             return {
