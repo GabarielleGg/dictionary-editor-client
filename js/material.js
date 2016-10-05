@@ -855,7 +855,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             $location.path('/edit/new');
         }
     })
-    .controller('iemlDictionaryController', function($scope, $window, $location, $mdToast,  $routeParams, $mdDialog, $document, $filter, crudFactory, sharedProperties) {
+    .controller('iemlDictionaryController', function($scope, $window, $location, $mdToast, $rootScope, $routeParams, $mdDialog, $document, $filter, crudFactory, sharedProperties) {
 
         var tableTitle = decodeURIComponent($routeParams.IEML);
         var language = decodeURIComponent($routeParams.LANG);
@@ -1065,7 +1065,15 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 lstAllIEML = sharedProperties.getAllItems();
                 $scope.tableTitle = tableTitle;
                 // get other info from entry
-                $scope.DefinedEntry = $filter("filter")(lstAllIEML, {IEML: tableTitle}, true)[0];
+                entry = $filter("filter")(lstAllIEML, {IEML: tableTitle}, true)[0];
+                if (!entry) {
+                    $rootScope.showAlert('Term not existant', tableTitle)
+                    $location.path('/');
+                    return
+                }
+                $scope.DefinedEntry = entry;
+
+
 
                 $scope.DefinedEntryClass = "n/a";
                 if ($scope.DefinedEntry.CLASS == "0")
@@ -1074,6 +1082,72 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     $scope.DefinedEntryClass = "Verb";
                 if ($scope.DefinedEntry.CLASS == "2")
                     $scope.DefinedEntryClass = "Noun";
+
+
+                crudFactory.rels(tableTitle).success(function(allrels) {
+
+                    var parent_paradigm = "none";
+
+                    //get the viz
+                    for (var i = 0; i < allrels.length; i++) {
+                        if (allrels[i].reltype == "Belongs to Paradigm") {
+                            parent_paradigm = allrels[i].rellist[0].ieml;
+                            break;
+                        }
+                    }
+
+                    // if null, it could be a paradigm or something weird, try wit itself
+                    if (parent_paradigm == "none")
+                        parent_paradigm = tableTitle;
+
+                    $scope.definitions = allrels;
+                    orderRelationsList();
+                });
+
+
+                crudFactory.iemltable(tableTitle).success(function(data) {
+                    $scope.fakeReply = data.tree;
+                    $scope.showTables = true;
+
+                    if (data.success == false) {
+                        $scope.showTables = false;
+                        $scope.tableError = data.exception;
+                    } else {
+                        var i=0, leni=$scope.fakeReply.Tables.length;
+                        $scope.DefinedEntry.MULTIPLE_TABLES = leni != 1;
+                        for (; i<leni; i++) {
+                            var j=0, lenj=$scope.fakeReply.Tables[i].table.length;
+                            for (; j<lenj; j++) {
+                                var k=0, lenk=$scope.fakeReply.Tables[i].table[j].slice.length;
+                                for (; k<lenk; k++) {
+                                    var input = $scope.fakeReply.Tables[i].table[j].slice[k].value;
+                                    if (input != "") {
+                                        var means = $scope.crossCheck(input);
+                                        if (means != undefined && means.length > 0) {
+                                            var f = means[0].FR;
+                                            var e = means[0].EN;
+
+                                            // https://github.com/angular/material/issues/2583
+
+                                            $scope.fakeReply.Tables[i].table[j].slice[k].means.fr = f;
+                                            $scope.fakeReply.Tables[i].table[j].slice[k].means.en = e;
+                                            $scope.fakeReply.Tables[i].table[j].slice[k].creatable = false;
+                                            $scope.fakeReply.Tables[i].table[j].slice[k].editable = true;
+                                        } else {
+                                            // there is no FR or EN, instead of showing blank, show some ieml
+                                            $scope.fakeReply.Tables[i].table[j].slice[k].means.en = $scope.fakeReply.Tables[i].table[j].slice[k].value;
+                                            // on click, we have the option to create ieml in DB
+                                            $scope.fakeReply.Tables[i].table[j].slice[k].creatable = true;
+                                            $scope.fakeReply.Tables[i].table[j].slice[k].editable = false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        $scope.materialTables = $scope.fakeReply.Tables;
+                    }
+                });
             }
 
             if(sharedProperties.getAllItems() == undefined) {
@@ -1086,70 +1160,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 callback()
             }
 
-            crudFactory.rels(tableTitle).success(function(allrels) {
-
-                var parent_paradigm = "none";
-
-                //get the viz
-                for (var i = 0; i < allrels.length; i++) {
-                    if (allrels[i].reltype == "Belongs to Paradigm") {
-                        parent_paradigm = allrels[i].rellist[0].ieml;
-                        break;
-                    }
-                }
-
-                // if null, it could be a paradigm or something weird, try wit itself
-                if (parent_paradigm == "none")
-                    parent_paradigm = tableTitle;
-
-                $scope.definitions = allrels;
-                orderRelationsList();
                 // });
-            });
 
-            crudFactory.iemltable(tableTitle).success(function(data) {
-                $scope.fakeReply = data.tree;
-                $scope.showTables = true;
-
-                if (data.success == false) {
-                    $scope.showTables = false;
-                    $scope.tableError = data.exception;
-                } else {
-                    var i=0, leni=$scope.fakeReply.Tables.length;
-                    $scope.DefinedEntry.MULTIPLE_TABLES = leni != 1;
-                    for (; i<leni; i++) {
-                        var j=0, lenj=$scope.fakeReply.Tables[i].table.length;
-                        for (; j<lenj; j++) {
-                            var k=0, lenk=$scope.fakeReply.Tables[i].table[j].slice.length;
-                            for (; k<lenk; k++) {
-                                var input = $scope.fakeReply.Tables[i].table[j].slice[k].value;
-                                if (input != "") {
-                                    var means = $scope.crossCheck(input);
-                                    if (means != undefined && means.length > 0) {
-                                        var f = means[0].FR;
-                                        var e = means[0].EN;
-
-                                        // https://github.com/angular/material/issues/2583
-
-                                        $scope.fakeReply.Tables[i].table[j].slice[k].means.fr = f;
-                                        $scope.fakeReply.Tables[i].table[j].slice[k].means.en = e;
-                                        $scope.fakeReply.Tables[i].table[j].slice[k].creatable = false;
-                                        $scope.fakeReply.Tables[i].table[j].slice[k].editable = true;
-                                    } else {
-                                        // there is no FR or EN, instead of showing blank, show some ieml
-                                        $scope.fakeReply.Tables[i].table[j].slice[k].means.en = $scope.fakeReply.Tables[i].table[j].slice[k].value;
-                                        // on click, we have the option to create ieml in DB
-                                        $scope.fakeReply.Tables[i].table[j].slice[k].creatable = true;
-                                        $scope.fakeReply.Tables[i].table[j].slice[k].editable = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    $scope.materialTables = $scope.fakeReply.Tables;
-                }
-            });
         }
 
         // user clicked on a cell in the table: trigger an action.
