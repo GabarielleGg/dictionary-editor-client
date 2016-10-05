@@ -358,6 +358,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         $scope.formTitle = 'Adding new entry';
         $scope.doNotValidate = false;
         $scope.data.factorization = '';
+        $scope.readOnly = true;
 
         var AscSub = "Ancestors in substance";
         var AscAtt = "Ancestors in attribute";
@@ -369,6 +370,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         var GermainOpposes ="Opposed siblings";
         var GermainAssocies ="Associated siblings";
         var GermainCroises = "Crossed siblings";
+        
+        $scope.editing = null;
 
         $scope.enableRelationsArray = [AscSub, AscAtt, AscMod, DscSub, DscAtt, DscMod, GermainJumeau, GermainOpposes, GermainAssocies, GermainCroises];
         $scope.enableRelationsArraySelected = [];
@@ -377,7 +380,19 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             $scope.iemlValue = $scope.data.factorization
         };
 
+        
+        var ignore_contained_edit_ieml = function () {
+            if($scope.editing) {
+                var i = $scope.data.rootIntersections.indexOf(currIemlEntry._id);
+                if (i > -1) {
+                    $scope.data.rootIntersections.splice(i, 1)
+                }
+            }
+        };
+
         $scope.rootConditions = function () {
+            ignore_contained_edit_ieml();
+
             return {
                 intersection: $scope.data.rootIntersections.length != 0,
                 rootAndNonEmpty: $scope.data.isParadigm && $scope.data.containsSize != 0
@@ -385,6 +400,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         };
 
         $scope.isRootEditable = function () {
+            ignore_contained_edit_ieml();
+
             if($scope.data.rootIntersections.length == 0) {
                 if($scope.data.isParadigm && $scope.data.containsSize) {
                     $scope.data.isParadigm = true;
@@ -393,7 +410,10 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
                 return true
             } else {
-                $scope.data.isParadigm = false;
+                if(currIemlEntry)
+                    $scope.data.isParadigm = currIemlEntry.ROOT_PARADIGM
+                else
+                    $scope.data.isParadigm = false;
                 return false
             }
         };
@@ -420,9 +440,11 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             if (configOption != null){
 
                 if (configOption === sharedProperties.FromListNew){
-                    // nothing special
+                    $scope.readOnly  = false;
                 }
                 else if (configOption === sharedProperties.FromListUpdate) {
+                    $scope.editing = true;
+                    $scope.readOnly  = false;
                     bindValues(currIemlEntry); // ieml exists, just update it
                     crudFactory.getRelVis(currIemlEntry.IEML).success(function(data, status){
                         $scope.enableRelationsArraySelected = data.viz.slice();
@@ -430,15 +452,14 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 }
                 else if (configOption === sharedProperties.FromTableNew) {
                     $scope.iemlValue = sharedProperties.tileIEML; //this is coming from table tile
-                    $scope.readOnly  = true;  // do not allow ieml editing
                     sharedProperties.tileIEML = null; // clean-up
                     crudFactory.getRelVis($scope.iemlValue).success(function(data, status){
                         $scope.enableRelationsArraySelected = data.viz.slice();
                     });
                 }
                 else if (configOption === sharedProperties.FromTableUpdate) {
+                    $scope.editing = true;
                     bindValues(currIemlEntry); // ieml exists, just update it
-                    $scope.readOnly  = true; // do not allow ieml editing
                     crudFactory.getRelVis(currIemlEntry.IEML).success(function(data, status){
                         $scope.enableRelationsArraySelected = data.viz.slice();
                     });
@@ -480,7 +501,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 FR:$scope.frenchValue,
                 EN:$scope.englishValue,
                 PARADIGM:$scope.data.isParadigm ? "1" : "0",
-                ID:(currIemlEntry!=undefined && currIemlEntry._id!=undefined)?currIemlEntry._id:undefined,
+                ID:$scope.editing?currIemlEntry._id:undefined,
                 INHIBITS: $scope.enableRelationsArraySelected
             };
 
