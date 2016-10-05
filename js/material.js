@@ -91,6 +91,10 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 return check_response($http.post(api_url + '/api/updateieml', newData));
             },
 
+            get_term : function(script) {
+                return check_response($http.get(api_url + '/api/get_term?script='+script))
+            },
+
             get : function() {
                 return check_response($http.get(api_url + '/api/allieml'));
             },
@@ -231,6 +235,14 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                             scope.data.gclass = data.class;
                             scope.data.taille = data.taille;
                             scope.data.canonical = data.canonical;
+                            scope.data.rootIntersections = data.rootIntersections;
+                            scope.data.containsSize = data.containsSize;
+
+                            var i = data.rootIntersections.indexOf(modelValue);
+                            if(i > -1) {
+                                scope.data.rootIntersections.splice(i, 1)
+                            }
+
                             deferred.resolve();
                         } else {
                             deferred.reject();
@@ -340,6 +352,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         $scope.data.isParadigm = false;
         $scope.data.layer = 'n/a';
         $scope.data.gclass = 'n/a';
+        $scope.data.rootIntersections = [];
+        $scope.data.containsSize = 0;
         $scope.formTitle = 'Adding new entry';
         $scope.doNotValidate = false;
 
@@ -356,6 +370,29 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
         $scope.enableRelationsArray = [AscSub, AscAtt, AscMod, DscSub, DscAtt, DscMod, GermainJumeau, GermainOpposes, GermainAssocies, GermainCroises];
         $scope.enableRelationsArraySelected = [];
+
+
+        $scope.rootConditions = function () {
+            return {
+                intersection: $scope.data.rootIntersections.length != 0,
+                rootAndNonEmpty: $scope.data.isParadigm && $scope.data.containsSize != 0
+            }
+        };
+
+        $scope.isRootEditable = function () {
+            if($scope.data.rootIntersections.length == 0) {
+                if($scope.data.isParadigm && $scope.data.containsSize) {
+                    $scope.data.isParadigm = true;
+                    return false
+                }
+
+                return true
+            } else {
+                $scope.data.isParadigm = false;
+                return false
+            }
+        };
+
 
         $scope.toggle = function (item, list) {
             var idx = list.indexOf(item);
@@ -815,7 +852,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
     })
     .controller('iemlDictionaryController', function($scope, $window, $location, $mdToast,  $routeParams, $mdDialog, $document, $filter, crudFactory, sharedProperties) {
 
-        var tableTitle =  decodeURIComponent($routeParams.IEML);
+        var tableTitle = decodeURIComponent($routeParams.IEML);
         var language = decodeURIComponent($routeParams.LANG);
         $scope.language = language;
 
@@ -984,10 +1021,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 return 0;
             }
 
-            function iemlOrderInv(a_name, b_name) {
-                return -iemlOrderFunction(a_name, b_name)
-            }
-
             // sort relation names
             $scope.definitions.sort(relationsOrderFunction);
             // sort relation endpoints based on ieml order
@@ -1064,21 +1097,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 if (parent_paradigm == "none")
                     parent_paradigm = tableTitle;
 
-                // crudFactory.getRelVis(parent_paradigm).success(function(data, status){
-                //
-                //     if (data.length > 0) {
-                //         var temp_arr = data[0].viz.slice();
-                //
-                //         //remove inhibited relations
-                //         for (var i = 0; i < temp_arr.length; i++) {
-                //             for (var j = 0; j < allrels.length; j++) {
-                //                 if (allrels[j].reltype == temp_arr[i]) {
-                //                     allrels[j].visible = false;
-                //                 }
-                //             }
-                //         }
-                //     }
-
                 $scope.definitions = allrels;
                 orderRelationsList();
                 // });
@@ -1127,7 +1145,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     $scope.materialTables = $scope.fakeReply.Tables;
                 }
             });
-        };
+        }
 
         // user clicked on a cell in the table: trigger an action.
         $scope.showLables = function (tableTile) {
@@ -1169,7 +1187,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         init();
 
         function init() {
-        };
+        }
 
         $scope.viewEntry = function ( index ) {
             var earl = '/loadTerms/';

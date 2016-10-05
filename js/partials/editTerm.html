@@ -35,11 +35,20 @@
         </div>
       </md-input-container>
 
-      <div layout="row">
-        <md-checkbox ng-model="data.isParadigm">
+      <md-input-container>
+        <md-checkbox ng-model="data.isParadigm" ng-disabled="!isRootEditable()">
           Root Paradigm
-        </md-checkbox>	
-      </div>
+        </md-checkbox>
+        <div ng-messages="rootConditions()">
+          <div ng-message="intersection" > Root paradigms intersection with <b ng-repeat="e in data.rootIntersections">
+            <a href="#/dicEdit/IEML/EN/{{e}}" >{{e}}</a></b></div>
+          <div ng-message="rootAndNonEmpty">
+            This script is a non empty root paradigm.
+          </div>
+        </div>
+      </md-input-container>
+      <!--<div layout="row">-->
+      <!--</div>-->
       
       <p> Inhibit: <p/>
       <div ng-show="data.isParadigm" ng-repeat="item in enableRelationsArray">
