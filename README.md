@@ -12,3 +12,5 @@ In the projet's directory, run
 bower install
 ```
 And that's it.
+
+To an explicit install : https://github.com/IEMLdev/ieml-openshift/blob/develop/src/main/docker/demonstration/dictionary/Dockerfile
