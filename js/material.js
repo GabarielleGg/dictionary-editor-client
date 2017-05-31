@@ -82,21 +82,21 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             create : function(newData) {
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 newData.token=$rootScope.token.value;
-                return check_response($http.post(api_url + '/api/newieml', newData));
+                return check_response($http.post(api_url + '/newieml', newData));
             },
 
             modify : function(newData) {
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 newData.token=$rootScope.token.value;
-                return check_response($http.post(api_url + '/api/updateieml', newData));
+                return check_response($http.post(api_url + '/updateieml', newData));
             },
 
             get_term : function(script) {
-                return check_response($http.get(api_url + '/api/get_term?script='+script))
+                return check_response($http.get(api_url + '/get_term?script='+script))
             },
 
             get : function() {
-                return check_response($http.get(api_url + '/api/allieml'));
+                return check_response($http.get(api_url + '/allieml'));
             },
 
             remove : function(id) {
@@ -105,36 +105,36 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     token: $rootScope.token.value,
                     id: id
                 };
-                return check_response($http.post(api_url + '/api/remieml', data));
+                return check_response($http.post(api_url + '/remieml', data));
             },
 
             exists : function(input, inputType) {
-                return ($http.get(api_url + '/api/exists/' + inputType + '/' + input));
+                return ($http.get(api_url + '/exists/' + inputType + '/' + input));
             },
 
             iemlvalid : function(input) {
                 // $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-                return ($http.get(api_url + '/api/scriptparser/parse?' + 'iemltext='+encodeURIComponent(input)));
+                return ($http.get(api_url + '/scriptparser/parse?' + 'iemltext='+encodeURIComponent(input)));
             },
 
             parsetree : function(input) {
                 // $http.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded";
-                return check_response($http.get(api_url + '/api/scriptparser/tree?' + 'iemltext='+encodeURIComponent(input)));
+                return check_response($http.get(api_url + '/scriptparser/tree?' + 'iemltext='+encodeURIComponent(input)));
             },
 
             iemltable : function(input) {
                 // $http.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded";
-                return ($http.get(api_url + '/api/scriptparser/tables?' + 'iemltext='+encodeURIComponent(input)));
+                return ($http.get(api_url + '/scriptparser/tables?' + 'iemltext='+encodeURIComponent(input)));
             },
 
             rels : function(input)  {
                 var data ={};
                 data.ieml = input;
                 $http.defaults.headers.post["Content-Type"] = "application/json";
-                return check_response($http.post(api_url + '/api/rels', data));
+                return check_response($http.post(api_url + '/rels', data));
             },
-            
-            getRelVis : function(input) {
+
+            /*getRelVis : function(input) {
                 var data ={};
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 data.ieml = input;
@@ -150,7 +150,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
             getUpdateStatus : function () {
                 return $http.get(api_url + '/api/update_status');
-            }
+            }*/
         };
 
 
@@ -196,7 +196,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
                     // use attributes.name to know which line in the form is being written
                     crudFactory.exists(modelValue, attributes.name).success(function(data, status, headers, config) {
-
+                        console.log(data)
                         if (data.length == 0) {
                             // no documents found
                             deferred.resolve();
@@ -370,7 +370,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         var GermainOpposes ="Opposed siblings";
         var GermainAssocies ="Associated siblings";
         var GermainCroises = "Crossed siblings";
-        
+
         $scope.editing = null;
 
         $scope.enableRelationsArray = [AscSub, AscAtt, AscMod, DscSub, DscAtt, DscMod, GermainJumeau, GermainOpposes, GermainAssocies, GermainCroises];
@@ -380,7 +380,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             $scope.iemlValue = $scope.data.factorization
         };
 
-        
+
         var ignore_contained_edit_ieml = function () {
             if($scope.editing) {
                 var i = $scope.data.rootIntersections.indexOf(currIemlEntry._id);
@@ -890,7 +890,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         // the language selection drop-down related code
         var lFrench = "Français";
         var lEnglish = "English";
-        
+
         $scope.displayLanguageChoices = [
             lFrench,
             lEnglish
@@ -1276,7 +1276,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             $scope.error = undefined;
             $scope.dataLoading = false;
             $scope.formData = {};
-            
+
             $scope.cancel = function($event) {
                 $event.preventDefault();
                 $mdDialog.cancel();
@@ -1286,7 +1286,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 $scope.dataLoading = true;
                 $http({
                     method  : 'POST',
-                    url     : api_url + '/api/client/authenticate',
+                    url     : api_url + '/client/authenticate',
                     data    : $.param($scope.formData),  // pass in data as strings
                     headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
                 }).then(function(response) {
