@@ -43,7 +43,7 @@
 		</md-input-container>
 		<md-input-container>
 			<label for="filterInput">Search for</label>
-			<input type="text" id="filterInput" ng-change="triggerFiltering('TEXT')" data-ng-model="filterText" >
+			<input type="text" id="filterInput" ng-change="triggerFiltering('TEXT')" data-ng-model="filterText" ></input>
 		</md-input-container>
 	</div>
 
@@ -54,9 +54,9 @@
 				<md-list class="fixedRows">
 					<md-list-item md-virtual-repeat="item in List | filter: filterText |
 	    												filter:filterItemIeml(filterText) |
-                                                        filter:filterItemParadigm(filterParadigm) | 
-                                                        filter:filterGrammaticalClass(filterClass) | 
-                                                        filter:filterItemLayer(filterLayer)" class="repeated-item" flex>
+                                                        filter:filterItemParadigm(filterParadigm) |
+                                                        filter:filterGrammaticalClass(filterClass) |
+                                                        filter:filterItemLayer(filterLayer)" class="repeated-item" >
 
 						<!-- md-primary for blue color, md-mini for smaller icon-->
 						<md-button  title="xDelete this IEML" class="md-fab md-primary md-mini" ng-click="showConfirm(deleteEntry, List.indexOf(item))">

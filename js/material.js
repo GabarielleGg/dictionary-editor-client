@@ -133,7 +133,9 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 return check_response($http.post(api_url + '/rels', data));
             },
-
+            getRanking : function(input) {
+                return check_response($http.get(api_url + '/ranking?' + 'ieml='+encodeURIComponent(input)));
+            }
             /*getRelVis : function(input) {
                 var data ={};
                 $http.defaults.headers.post["Content-Type"] = "application/json";
@@ -154,16 +156,16 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         };
 
 
-        shared_properties.checkUpdateStatus = function() {
-            crud_factory.getUpdateStatus().success(function (data) {
-                shared_properties.updating = !data.free;
-                if('error_message' in data) {
-                    $rootScope.showAlert('Relation update error', data['error_message'])
-                }
-            })
-        };
+        // shared_properties.checkUpdateStatus = function() {
+        //     crud_factory.getUpdateStatus().success(function (data) {
+        //         shared_properties.updating = !data.free;
+        //         if('error_message' in data) {
+        //             $rootScope.showAlert('Relation update error', data['error_message'])
+        //         }
+        //     })
+        // };
 
-        setInterval(shared_properties.checkUpdateStatus, 6000);
+        // setInterval(shared_properties.checkUpdateStatus, 6000);
 
         return crud_factory
     })
@@ -908,6 +910,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             return crudFactory.parsetree(tableTitle);
         };
 
+
+
         $scope.crossCheck = function( input) {
             var newTemp = $filter("filter")(lstAllIEML, {IEML:input}, true);
             return newTemp;
@@ -1095,7 +1099,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 $scope.DefinedEntry = entry;
 
 
-
                 $scope.DefinedEntryClass = "n/a";
                 if ($scope.DefinedEntry.CLASS == "0")
                     $scope.DefinedEntryClass = "Auxilliary";
@@ -1125,6 +1128,9 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     orderRelationsList();
                 });
 
+                crudFactory.getRanking(tableTitle).success(function(data) {
+                    $scope.ranking = data
+                })
 
                 crudFactory.iemltable(tableTitle).success(function(data) {
                     $scope.fakeReply = data.tree;

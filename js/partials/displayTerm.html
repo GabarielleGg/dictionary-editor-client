@@ -141,11 +141,32 @@
             </md-content>
         </md-tab>
 
-        <md-tab label="GRAPH">
+        <md-tab label="RANKING">
             <md-content class="md-padding">
 
-                <div d3ieml style="width=100%; height=100%"> </div>
+              <div ng-repeat="term in ranking">
+                  <div layout="column">
+                      <table>
+                          <tr>
+                              <td style="width:400px;">
+                                  <a style="border: none;" align="left" href="#/dicEdit/IEML/{{language}}/{{term.ieml}}" target="_self" ng-class="{disabled:!lnk.exists, buttonflat:lnk.exists, buttonflatdis:!lnk.exists}"   class="btn">{{term.ieml}}</a>
+                              </td>
 
+                              <td>
+                                  <table>
+
+                                      <tr>
+                                         <p  align="left">{{lookupLabels(term.ieml).DISP}}</p>
+                                      </tr>
+                                  </table>
+                              </td>
+                              <td><p  align="left">{{term.relations}}</p></td>
+                              <td><p  align="left">{{term.ranking}}</p></td>
+
+                          </tr>
+                      </table>
+                  </div>
+              </div>
             </md-content>
         </md-tab>
     </md-tabs>
@@ -154,5 +175,3 @@
         <md-button class="md-raised" ng-click="cancelEdit()"> Back </md-button>
     </div>
 </div>
-
-
