@@ -43,10 +43,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 templateUrl: './js/partials/displayTerm.html',
                 reloadOnSearch: true
             })
-            .when('/graph', {
-                controller: 'iemlDictionaryController',
-                templateUrl: './js/partials/graph.html'
-            })
         ;
     })
     .factory('crudFactory', function($http, $rootScope, sharedProperties, $mdDialog, $q) {
@@ -76,12 +72,12 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             return deferred.promise
         }
 
-
         crud_factory = {
 
             create : function(newData) {
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 newData.token=$rootScope.token.value;
+                newData.version = sharedProperties.dictionary_version
                 return check_response($http.post(api_url + '/newieml', newData));
             },
 
@@ -91,12 +87,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 return check_response($http.post(api_url + '/updateieml', newData));
             },
 
-            get_term : function(script) {
-                return check_response($http.get(api_url + '/get_term?script='+script))
-            },
-
-            get : function() {
-                return check_response($http.get(api_url + '/allieml'));
+            get_allIEML : function() {
+                return check_response($http.get(api_url + '/allieml?version='+encodeURIComponent(sharedProperties.dictionary_version)));
             },
 
             remove : function(id) {
@@ -117,56 +109,21 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 return ($http.get(api_url + '/scriptparser/parse?' + 'iemltext='+encodeURIComponent(input)));
             },
 
-            parsetree : function(input) {
-                // $http.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded";
-                return check_response($http.get(api_url + '/scriptparser/tree?' + 'iemltext='+encodeURIComponent(input)));
-            },
-
             iemltable : function(input) {
                 // $http.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded";
-                return ($http.get(api_url + '/scriptparser/tables?' + 'iemltext='+encodeURIComponent(input)));
+                return ($http.get(api_url + '/scriptparser/tables?ieml='+encodeURIComponent(input)));
             },
 
             rels : function(input)  {
-                var data ={};
-                data.ieml = input;
-                $http.defaults.headers.post["Content-Type"] = "application/json";
-                return check_response($http.post(api_url + '/rels', data));
+                return check_response($http.get(api_url + '/rels?version='+encodeURIComponent(sharedProperties.dictionary_version) + '&ieml='+encodeURIComponent(input)));
             },
             getRanking : function(input) {
-                return check_response($http.get(api_url + '/ranking?' + 'ieml='+encodeURIComponent(input)));
+                return check_response($http.get(api_url + '/ranking?version='+encodeURIComponent(sharedProperties.dictionary_version) + '&ieml='+encodeURIComponent(input)));
+            },
+            get_version : function() {
+                return ($http.get(api_url + '/version'))
             }
-            /*getRelVis : function(input) {
-                var data ={};
-                $http.defaults.headers.post["Content-Type"] = "application/json";
-                data.ieml = input;
-                return check_response($http.post(api_url + '/api/getRelVisibility', data));
-            },
-
-            updateRelations : function () {
-                var data ={};
-                $http.defaults.headers.post["Content-Type"] = "application/json";
-                data.token=$rootScope.token.value;
-                return check_response($http.post(api_url + '/api/updaterelations', data));
-            },
-
-            getUpdateStatus : function () {
-                return $http.get(api_url + '/api/update_status');
-            }*/
         };
-
-
-        // shared_properties.checkUpdateStatus = function() {
-        //     crud_factory.getUpdateStatus().success(function (data) {
-        //         shared_properties.updating = !data.free;
-        //         if('error_message' in data) {
-        //             $rootScope.showAlert('Relation update error', data['error_message'])
-        //         }
-        //     })
-        // };
-
-        // setInterval(shared_properties.checkUpdateStatus, 6000);
-
         return crud_factory
     })
     .directive('exists', function($q, $timeout, $http, crudFactory) {
@@ -231,6 +188,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     var deferred = $q.defer();
 
                     crudFactory.iemlvalid(modelValue).success(function(data, status, headers, config) {
+                        console.log(data.success)
                         if (data.success === true) {
                             // save computed characteristics on calling scope for later usage
                             scope.data.layer = data.level;
@@ -269,8 +227,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         var allItems;
 
         $rootScope.token = $localStorage.$default({value:''});
-
-
 
         shared_properties = {
             updating : false,
@@ -340,6 +296,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             setAllItems: function(value) {
                 allItems = value;
             },
+
+            dictionary_version : null,
 
             defaultSelected: 1
         };
@@ -506,12 +464,14 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 ID:$scope.editing?currIemlEntry._id:undefined,
                 INHIBITS: $scope.enableRelationsArraySelected
             };
+            sharedProperties.updating = true
 
             if (toBeAdded.ID==undefined) {
-
                 crudFactory.create(toBeAdded).success(function(data) {
 
                     sharedProperties.addToIEMLLIST(data['added']);
+                    sharedProperties.updating = false
+
 
                 }).error(function(data, status, headers, config) {
 
@@ -520,12 +480,15 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     } else {
                         $rootScope.showAlert('Create operation failed', status);
                     }
+
+                    sharedProperties.updating = false
                 });
             } else { //do update
 
                 crudFactory.modify(toBeAdded).success(function(data, status, headers, config){
 
                     sharedProperties.updateIEMLLIST(toBeAdded);
+                    sharedProperties.updating = false
 
                 }).error(function(data, status, headers, config) {
 
@@ -534,6 +497,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     } else {
                         $rootScope.showAlert('Modify operation failed', status);
                     }
+                    sharedProperties.updating = false
+
                 });
             }
 
@@ -756,10 +721,13 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         init();
 
         function init() {
-            crudFactory.get().success(function(data) {
-                $scope.List = data;
-                orderList();
-                sharedProperties.setAllItems($scope.List);
+            crudFactory.get_version().success(function(value) {
+                sharedProperties.dictionary_version = value;
+                crudFactory.get_allIEML().success(function(data) {
+                    $scope.List = data;
+                    orderList();
+                    sharedProperties.setAllItems($scope.List);
+                });
             });
         };
 
@@ -905,12 +873,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 '/'+encodeURIComponent(tableTitle);
             $location.path(earl);
         };
-
-        $scope.getParseTree= function () {
-            return crudFactory.parsetree(tableTitle);
-        };
-
-
 
         $scope.crossCheck = function( input) {
             var newTemp = $filter("filter")(lstAllIEML, {IEML:input}, true);
@@ -1177,10 +1139,14 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             }
 
             if(sharedProperties.getAllItems() == undefined) {
-                crudFactory.get().success(function (data) {
-                    $scope.List = data;
-                    sharedProperties.setAllItems(data);
-                    callback()
+                crudFactory.get_version().success(function(value) {
+                    sharedProperties.dictionary_version = value;
+
+                    crudFactory.get_allIEML(sharedProperties.dictionary_version).success(function (data) {
+                        $scope.List = data;
+                        sharedProperties.setAllItems(data);
+                        callback()
+                    })
                 });
             } else {
                 callback()

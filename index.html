@@ -42,21 +42,25 @@
 					</md-button>
 
 					<md-button class="md-fab "
-							   title="{{!sharedProperties.updating ? 'Recompute the relations, this operation should take ~3min.':
-							   'Updating the terms relations, this operation takes ~3 min.'}}"
-							   ng-show="isShowAddNew()"
-							   ng-click="!sharedProperties.updating ? updateRelations(): null">
+							   title="Recomputing the relations, this operation should take ~1min."
+							   ng-show="sharedProperties.updating">
 
-						<i class="material-icons" ng-class="{spin: sharedProperties.updating}">autorenew</i>
+						<i class="material-icons spin">autorenew</i>
 
 						<!--<i class="material-icons spin" ng-show="sharedProperties.updating">autorenew</i>-->
 					</md-button>
 
 				</div>
 
-				<div flex="60" align="center">
+				<div flex="45" align="center">
 					<h2 >
 						<span class="md-title" style="padding-left:1em; padding-right:2em" >IEML Dictionary Editor</span>
+					</h2>
+				</div>
+
+				<div flex="15" align="right">
+					<h6 >
+						<span>Version: {{sharedProperties.dictionary_version}}</span>
 					</h2>
 				</div>
 
