@@ -1134,20 +1134,18 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
                 crudFactory.iemltable(tableTitle).success(function(data) {
                     $scope.fakeReply = data.tree;
-                    $scope.showTables = true;
+                    $scope.showTables = false;
 
                     if (data.success == false) {
-                        $scope.showTables = false;
                         $scope.tableError = data.exception;
                     } else {
-                        var i=0, leni=$scope.fakeReply.Tables.length;
-                        $scope.DefinedEntry.MULTIPLE_TABLES = leni != 1;
-                        for (; i<leni; i++) {
-                            var j=0, lenj=$scope.fakeReply.Tables[i].table.length;
-                            for (; j<lenj; j++) {
-                                var k=0, lenk=$scope.fakeReply.Tables[i].table[j].slice.length;
-                                for (; k<lenk; k++) {
-                                    var input = $scope.fakeReply.Tables[i].table[j].slice[k].value;
+                        $scope.DefinedEntry.MULTIPLE_TABLES = $scope.fakeReply.Tables.lenght != 1
+
+                        for (var table of $scope.fakeReply.Tables) {
+                            $scope.showTables = $scope.showTables || table.dim != 0
+                            for (var tab of table.table) {
+                                for (var slice of tab.slice) {
+                                    var input = slice.value;
                                     if (input != "") {
                                         var means = $scope.crossCheck(input);
                                         if (means != undefined && means.length > 0) {
@@ -1156,18 +1154,19 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
                                             // https://github.com/angular/material/issues/2583
 
-                                            $scope.fakeReply.Tables[i].table[j].slice[k].means.fr = f;
-                                            $scope.fakeReply.Tables[i].table[j].slice[k].means.en = e;
-                                            $scope.fakeReply.Tables[i].table[j].slice[k].creatable = false;
-                                            $scope.fakeReply.Tables[i].table[j].slice[k].editable = true;
+                                            slice.means.fr = f;
+                                            slice.means.en = e;
+                                            slice.creatable = false;
+                                            slice.editable = true;
                                         } else {
                                             // there is no FR or EN, instead of showing blank, show some ieml
-                                            $scope.fakeReply.Tables[i].table[j].slice[k].means.en = $scope.fakeReply.Tables[i].table[j].slice[k].value;
+                                            slice.means.en = $scope.fakeReply.Tables[i].table[j].slice[k].value;
                                             // on click, we have the option to create ieml in DB
-                                            $scope.fakeReply.Tables[i].table[j].slice[k].creatable = true;
-                                            $scope.fakeReply.Tables[i].table[j].slice[k].editable = false;
+                                            slice.creatable = true;
+                                            slice.editable = false;
                                         }
                                     }
+
                                 }
                             }
                         }
