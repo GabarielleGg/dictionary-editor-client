@@ -145,6 +145,15 @@
         <md-tab label="RANKING">
             <md-content class="md-padding">
 
+              <md-button class="md-fab "
+                         title="Compute the ranking"
+                         ng-show="ranking.length == 0"
+                         ng-click="getRanking()"
+                         ng-disabled="sharedProperties.updating">
+                  <i class="material-icons" ng-show="!compute_ranking">launch</i>
+                  <i class="material-icons spin" ng-show="compute_ranking">autorenew</i>
+              </md-button>
+
               <div ng-repeat="term in ranking">
                   <div layout="column">
                       <table>

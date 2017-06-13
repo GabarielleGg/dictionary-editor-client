@@ -59,11 +59,11 @@
                                                         filter:filterItemLayer(filterLayer)" class="repeated-item" >
 
 						<!-- md-primary for blue color, md-mini for smaller icon-->
-						<md-button  title="xDelete this IEML" class="md-fab md-primary md-mini" ng-click="showConfirm(deleteEntry, List.indexOf(item))">
+						<md-button  title="xDelete this IEML" class="md-fab md-primary md-mini" ng-click="showConfirm(deleteEntry, List.indexOf(item))" ng-disabled="item.PARADIGM == 0 || sharedProperties.updating">
 							<i class="material-icons">remove</i>
 						</md-button>
 
-						<md-button  title="Edit this IEML" class="md-fab md-primary md-mini" ng-click="editEntry(List.indexOf(item))">
+						<md-button  title="Edit this IEML" class="md-fab md-primary md-mini" ng-click="editEntry(List.indexOf(item))" ng-disabled="sharedProperties.updating">
 							<i class="material-icons">settings</i>
 						</md-button>
 

@@ -78,13 +78,13 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 newData.token=$rootScope.token.value;
                 newData.version = sharedProperties.dictionary_version
-                return check_response($http.post(api_url + '/newieml', newData));
+                return check_response($http.post(api_url + '/newieml?version='+encodeURIComponent(sharedProperties.dictionary_version), newData));
             },
 
             modify : function(newData) {
                 $http.defaults.headers.post["Content-Type"] = "application/json";
                 newData.token=$rootScope.token.value;
-                return check_response($http.post(api_url + '/updateieml', newData));
+                return check_response($http.post(api_url + '/updateieml?version='+encodeURIComponent(sharedProperties.dictionary_version), newData));
             },
 
             get_allIEML : function() {
@@ -97,16 +97,16 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     token: $rootScope.token.value,
                     id: id
                 };
-                return check_response($http.post(api_url + '/remieml', data));
+                return check_response($http.post(api_url + '/remieml?version='+encodeURIComponent(sharedProperties.dictionary_version), data));
             },
 
             exists : function(input, inputType) {
-                return ($http.get(api_url + '/exists/' + inputType + '/' + input));
+                return ($http.get(api_url + '/exists/' + inputType + '/' + input + '?version='+encodeURIComponent(sharedProperties.dictionary_version)));
             },
 
             iemlvalid : function(input) {
                 // $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-                return ($http.get(api_url + '/scriptparser/parse?' + 'iemltext='+encodeURIComponent(input)));
+                return ($http.get(api_url + '/scriptparser/parse?version='+encodeURIComponent(sharedProperties.dictionary_version) + '&iemltext='+encodeURIComponent(input)));
             },
 
             iemltable : function(input) {
@@ -122,6 +122,9 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             },
             get_version : function() {
                 return ($http.get(api_url + '/version'))
+            },
+            getRelVis: function(input) {
+                return check_response($http.get(api_url + '/get_rel_visibility?version='+encodeURIComponent(sharedProperties.dictionary_version) + '&ieml='+encodeURIComponent(input)))
             }
         };
         return crud_factory
@@ -155,7 +158,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
                     // use attributes.name to know which line in the form is being written
                     crudFactory.exists(modelValue, attributes.name).success(function(data, status, headers, config) {
-                        console.log(data)
                         if (data.length == 0) {
                             // no documents found
                             deferred.resolve();
@@ -223,8 +225,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         var EntryEditType = null;
         // ieml of current interest
         var iemlEntry;
-        // local copy of DB
-        var allItems;
 
         $rootScope.token = $localStorage.$default({value:''});
 
@@ -254,31 +254,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 return EntryEditType;
             },
 
-            // used by iemlEntryEditorController
-            addToIEMLLIST:function (toBeAdded) {
-                allItems.push(toBeAdded);
-            },
-
-            // used by iemlEntryEditorController
-            updateIEMLLIST:function(toBeAdded) {
-                var item;
-                for (var i =0; i<allItems.length; i++) {
-                    item=allItems[i];
-                    if (item._id==toBeAdded.ID) {
-                        allItems[i].IEML=toBeAdded.IEML;
-                        allItems[i].CLASS=toBeAdded.CLASS;
-                        allItems[i].EN=toBeAdded.EN;
-                        allItems[i].FR=toBeAdded.FR;
-                        allItems[i].LAYER=toBeAdded.LAYER;
-                        allItems[i].PARADIGM=toBeAdded.PARADIGM;
-                        allItems[i].ROOT_PARADIGM=toBeAdded.ROOT_PARADIGM;
-                        allItems[i].TAILLE=toBeAdded.TAILLE;
-                        allItems[i].CANONICAL=toBeAdded.CANONICAL;
-                        break;
-                    }
-                }
-            },
-
             getIemlEntry: function () {
                 return iemlEntry;
             },
@@ -287,24 +262,27 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 iemlEntry = value;
             },
 
-            // get local list of ieml
-            getAllItems: function () {
-                return allItems;
-            },
-
-            // store locally list of all ieml in DB
-            setAllItems: function(value) {
-                allItems = value;
-            },
-
             dictionary_version : null,
 
-            defaultSelected: 1
+            defaultSelected: 1,
+            allItems: []
         };
 
         return shared_properties
     })
-    .controller('iemlEntryEditorController', function($scope,  $rootScope, $location, $window, crudFactory, sharedProperties) {
+    .factory('NotifyingService', function($rootScope) {
+        return {
+            subscribe: function(scope, callback) {
+                var handler = $rootScope.$on('dictionary_updated', callback);
+                scope.$on('$destroy', handler);
+            },
+
+            notify: function() {
+                $rootScope.$emit('dictionary_updated');
+            }
+        };
+    })
+    .controller('iemlEntryEditorController', function($scope,  $rootScope, $location, $window, crudFactory, sharedProperties, NotifyingService) {
 
         var currIemlEntry = null;
 
@@ -333,7 +311,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
         $scope.editing = null;
 
-        $scope.enableRelationsArray = [AscSub, AscAtt, AscMod, DscSub, DscAtt, DscMod, GermainJumeau, GermainOpposes, GermainAssocies, GermainCroises];
+        $scope.enableRelationsArray = [AscSub, AscAtt, AscMod, GermainJumeau, GermainOpposes, GermainAssocies, GermainCroises];
         $scope.enableRelationsArraySelected = [];
 
         $scope.updateIeml = function () {
@@ -407,7 +385,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     $scope.readOnly  = false;
                     bindValues(currIemlEntry); // ieml exists, just update it
                     crudFactory.getRelVis(currIemlEntry.IEML).success(function(data, status){
-                        $scope.enableRelationsArraySelected = data.viz.slice();
+                        $scope.enableRelationsArraySelected = data.slice();
                     });
                 }
                 else if (configOption === sharedProperties.FromTableNew) {
@@ -469,9 +447,15 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             if (toBeAdded.ID==undefined) {
                 crudFactory.create(toBeAdded).success(function(data) {
 
-                    sharedProperties.addToIEMLLIST(data['added']);
                     sharedProperties.updating = false
 
+                    crudFactory.get_version().success(function(value) {
+                        sharedProperties.dictionary_version = value;
+                        crudFactory.get_allIEML().success(function(data) {
+                            sharedProperties.allItems = data;
+                            NotifyingService.notify()
+                        });
+                    });
 
                 }).error(function(data, status, headers, config) {
 
@@ -487,8 +471,17 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
                 crudFactory.modify(toBeAdded).success(function(data, status, headers, config){
 
-                    sharedProperties.updateIEMLLIST(toBeAdded);
                     sharedProperties.updating = false
+
+                    crudFactory.get_version().success(function(value) {
+                        sharedProperties.dictionary_version = value;
+                        crudFactory.get_allIEML().success(function(data) {
+                            sharedProperties.allItems = data;
+                            NotifyingService.notify()
+
+                        });
+
+                    });
 
                 }).error(function(data, status, headers, config) {
 
@@ -502,10 +495,10 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 });
             }
 
-            $window.history.back();
+            $window.history.back()
         };
     })
-    .controller('loadIEMLController', function($scope,  $rootScope, $location, $mdDialog, $filter, crudFactory, sharedProperties) {
+    .controller('loadIEMLController', function($scope,  $rootScope, $location, $mdDialog, $filter, crudFactory, sharedProperties, NotifyingService) {
 
         var fParadigms = "Paradigms";
         var fSingularSequence = "Singular Sequence";
@@ -523,6 +516,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         var fLayer4 = "Layer 4";
         var fLayer5 = "Layer 5";
         var fLayer6 = "Layer 6";
+
+        $scope.sharedProperties = sharedProperties
 
         $scope.filterParadigmChoices = [
             fAllTerms,
@@ -675,34 +670,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             }
 
             function iemlOrderFunction(a, b){
-                //http://www.javascriptkit.com/javatutors/arraysort.shtml
-                //http://stackoverflow.com/questions/979256/sorting-an-array-of-javascript-objects
-                //Compare "a" and "b" in some fashion, and return -1, 0, or 1
-                if (parseInt(a.LAYER) < parseInt(b.LAYER))
-                    return -1;
-                if (parseInt(a.LAYER) > parseInt(b.LAYER))
-                    return 1;
-                if (parseInt(a.TAILLE) < parseInt(b.TAILLE))
-                    return -1;
-                if (parseInt(a.TAILLE) > parseInt(b.TAILLE))
-                    return 1;
-
-                for(var i = 0; i < Math.min(a.CANONICAL.length, b.CANONICAL.length); i++) {
-                    if(a.CANONICAL[0].charCodeAt(i) == b.CANONICAL[0].charCodeAt(i))
-                        continue;
-
-                    if(a.CANONICAL[0].charCodeAt(i) > b.CANONICAL[0].charCodeAt(i))
-                        return 1;
-                    else
-                        return -1;
-
-                }
-                if(a.CANONICAL.length == b.CANONICAL.length)
-                    return 0;
-                else if(a.CANONICAL.length > b.CANONICAL.length)
-                    return 1;
-                else
-                    return -1;
+                return a.INDEX - b.INDEX
             }
 
             if ($scope.filterOrder === iemlOrder) {
@@ -716,20 +684,25 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     order('-EN',true);
             }
         };
+        NotifyingService.subscribe($scope, () => {
+            $scope.List = sharedProperties.allItems;
+            orderList();
+        });
 
-        $scope.List = [];
-        init();
-
-        function init() {
+        console.log(sharedProperties.allItems);
+        if (sharedProperties.allItems.length == 0) {
             crudFactory.get_version().success(function(value) {
                 sharedProperties.dictionary_version = value;
                 crudFactory.get_allIEML().success(function(data) {
-                    $scope.List = data;
+                    sharedProperties.allItems = data;
+                    $scope.List = sharedProperties.allItems;
                     orderList();
-                    sharedProperties.setAllItems($scope.List);
                 });
             });
-        };
+        } else {
+            $scope.List = sharedProperties.allItems;
+            orderList();
+        }
 
         $scope.showConfirm = function(callBack, index) {
             // Appending dialog to document.body to cover sidenav in docs app
@@ -750,10 +723,22 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         $scope.deleteEntry = function ( index ) {
 
             var toBeRemoved = $scope.List[index].IEML;
+            sharedProperties.updating = true
 
             crudFactory.remove(toBeRemoved).success(function(data) {
-                $scope.List.splice(index, 1);
+                sharedProperties.updating = false
+
+                crudFactory.get_version().success(function(value) {
+                    sharedProperties.dictionary_version = value;
+                    crudFactory.get_allIEML().success(function(data) {
+                        sharedProperties.allItems = data;
+                        NotifyingService.notify()
+                    });
+                });
+
             }).error(function(data, status, headers, config) {
+                sharedProperties.updating = false
+
                 // called asynchronously if an error occurs
                 // or server returns response with an error status.
                 // this won't work in case you cannot connect to db
@@ -827,7 +812,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
             $mdDialog.hide();
 
-            var lst = sharedProperties.getAllItems();
+            var lst = sharedProperties.allItems;
             for (var i=0;i<lst.length; i++) {
                 if (lst[i].IEML == tableTile.value) {
                     sharedProperties.setIemlEntry(lst[i]);
@@ -846,7 +831,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             $location.path('/edit/new');
         }
     })
-    .controller('iemlDictionaryController', function($scope, $window, $location, $mdToast, $rootScope, $routeParams, $mdDialog, $document, $filter, crudFactory, sharedProperties) {
+    .controller('iemlDictionaryController', function($scope, $window, $location, $mdToast, $rootScope, $routeParams, $mdDialog, $document, $filter, crudFactory, sharedProperties, NotifyingService) {
 
         var tableTitle = decodeURIComponent($routeParams.IEML);
         var language = decodeURIComponent($routeParams.LANG);
@@ -855,7 +840,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
         $scope.sh = sharedProperties;
 
         var previousTableTile = tableTitle;
-        var lstAllIEML = sharedProperties.getAllItems();
+        var lstAllIEML = sharedProperties.allItems;
 
         // the language selection drop-down related code
         var lFrench = "Français";
@@ -1039,6 +1024,16 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 return false;
             }
         };
+        $scope.ranking = [];
+        $scope.compute_ranking = false;
+        $scope.getRanking = function() {
+            $scope.compute_ranking = true;
+
+            crudFactory.getRanking(tableTitle).success(function(data) {
+                $scope.compute_ranking = false;
+                $scope.ranking = data
+            })
+        }
 
         function init() {
 
@@ -1049,7 +1044,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             sharedProperties.setIemlEntry(null);
 
             function callback() {
-                lstAllIEML = sharedProperties.getAllItems();
+                lstAllIEML = sharedProperties.allItems;
                 $scope.tableTitle = tableTitle;
                 // get other info from entry
                 entry = $filter("filter")(lstAllIEML, {IEML: tableTitle}, true)[0];
@@ -1090,10 +1085,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     orderRelationsList();
                 });
 
-                crudFactory.getRanking(tableTitle).success(function(data) {
-                    $scope.ranking = data
-                })
-
                 crudFactory.iemltable(tableTitle).success(function(data) {
                     $scope.fakeReply = data.tree;
                     $scope.showTables = false;
@@ -1122,7 +1113,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                                             slice.editable = true;
                                         } else {
                                             // there is no FR or EN, instead of showing blank, show some ieml
-                                            slice.means.en = $scope.fakeReply.Tables[i].table[j].slice[k].value;
+                                            slice.means.en = slice.value;
                                             // on click, we have the option to create ieml in DB
                                             slice.creatable = true;
                                             slice.editable = false;
@@ -1138,14 +1129,14 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 });
             }
 
-            if(sharedProperties.getAllItems() == undefined) {
+            if(sharedProperties.allItems.length == 0) {
                 crudFactory.get_version().success(function(value) {
                     sharedProperties.dictionary_version = value;
 
                     crudFactory.get_allIEML(sharedProperties.dictionary_version).success(function (data) {
-                        $scope.List = data;
-                        sharedProperties.setAllItems(data);
+                        sharedProperties.allItems = data;
                         callback()
+                        NotifyingService.notify()
                     })
                 });
             } else {
