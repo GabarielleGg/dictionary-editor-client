@@ -76,56 +76,79 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
             create : function(newData) {
                 $http.defaults.headers.post["Content-Type"] = "application/json";
-                newData.token=$rootScope.token.value;
+                $http.defaults.headers.post["Authorization"] = "Token " + $rootScope.token.value;
+
                 newData.version = sharedProperties.dictionary_version
-                return check_response($http.post(api_url + '/newieml?version='+encodeURIComponent(sharedProperties.dictionary_version), newData));
+                return check_response($http.post(api_url + '/terms?version='+encodeURIComponent(sharedProperties.dictionary_version), newData));
             },
 
             modify : function(newData) {
-                $http.defaults.headers.post["Content-Type"] = "application/json";
+                $http.defaults.headers.put["Content-Type"] = "application/json";
+                $http.defaults.headers.put["Authorization"] = "Token " + $rootScope.token.value;
+
                 newData.token=$rootScope.token.value;
-                return check_response($http.post(api_url + '/updateieml?version='+encodeURIComponent(sharedProperties.dictionary_version), newData));
+                return check_response($http.put(api_url + '/terms?version='+encodeURIComponent(sharedProperties.dictionary_version), newData));
             },
 
             get_allIEML : function() {
-                return check_response($http.get(api_url + '/allieml?version='+encodeURIComponent(sharedProperties.dictionary_version)));
+                return check_response($http.get(api_url '/all?version='+encodeURIComponent(sharedProperties.dictionary_version)));
             },
 
             remove : function(id) {
-                $http.defaults.headers.post["Content-Type"] = "application/json";
-                data = {
-                    token: $rootScope.token.value,
-                    id: id
-                };
-                return check_response($http.post(api_url + '/remieml?version='+encodeURIComponent(sharedProperties.dictionary_version), data));
+                $http.defaults.headers.delete = {
+                    "Authorization": "Token " + $rootScope.token.value
+                }
+
+                return check_response($http.delete(api_url + '/terms?version='+encodeURIComponent(sharedProperties.dictionary_version) + "&ieml=" + encodeURIComponent(id)));
             },
 
             exists : function(input, inputType) {
-                return ($http.get(api_url + '/exists/' + inputType + '/' + input + '?version='+encodeURIComponent(sharedProperties.dictionary_version)));
+                return ($http.get(api_url + '/terms/' + inputType + '?id=' + encodeURIComponent(input) + '&version='+encodeURIComponent(sharedProperties.dictionary_version)));
             },
 
             iemlvalid : function(input) {
                 // $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-                return ($http.get(api_url + '/scriptparser/parse?version='+encodeURIComponent(sharedProperties.dictionary_version) + '&iemltext='+encodeURIComponent(input)));
+                return ($http.get(api_url + '/scripts/parse?version='+encodeURIComponent(sharedProperties.dictionary_version) + '&ieml='+encodeURIComponent(input)));
             },
 
             iemltable : function(input) {
                 // $http.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded";
-                return ($http.get(api_url + '/scriptparser/tables?ieml='+encodeURIComponent(input)));
+                return ($http.get(api_url + '/scripts/tables?ieml='+encodeURIComponent(input)));
             },
 
             rels : function(input)  {
-                return check_response($http.get(api_url + '/rels?version='+encodeURIComponent(sharedProperties.dictionary_version) + '&ieml='+encodeURIComponent(input)));
+                return check_response($http.get(api_url + '/relations?version='+encodeURIComponent(sharedProperties.dictionary_version) + '&ieml='+encodeURIComponent(input)));
             },
             getRanking : function(input) {
-                return check_response($http.get(api_url + '/ranking?version='+encodeURIComponent(sharedProperties.dictionary_version) + '&ieml='+encodeURIComponent(input)));
+                return check_response($http.get(api_url + '/terms/ranking?version='+encodeURIComponent(sharedProperties.dictionary_version) + '&ieml='+encodeURIComponent(input)));
             },
             get_version : function() {
                 return ($http.get(api_url + '/version'))
             },
             getRelVis: function(input) {
-                return check_response($http.get(api_url + '/get_rel_visibility?version='+encodeURIComponent(sharedProperties.dictionary_version) + '&ieml='+encodeURIComponent(input)))
+                return check_response($http.get(api_url + '/relations/visibility?version='+encodeURIComponent(sharedProperties.dictionary_version) + '&ieml='+encodeURIComponent(input)))
+            },
+            feedBackRanking: function(data) {
+                $http.defaults.headers.post["Content-Type"] = "application/json";
+                return $http.post(api_url + '/feedback/', data)
+            },
+            getFeedback: function(ieml_src) {
+                return $http.get(api_url + '/feedback/'+ieml_src)
+            },
+            remove_feedback: function(id) {
+                return $http.delete(api_url + '/feedback/'+id +'/')
+            },
+            update_feedback: function(id, data) {
+                data = {
+                    'term_src': data['term_src'],
+                    'term_dest': data['term_dest'],
+                    'relation': data['relation'],
+                    'distance': data['distance'],
+                    'comment': data['comment']
+                }
+                return $http.put(api_url + '/feedback/'+id +'/', data)
             }
+
         };
         return crud_factory
     })
@@ -1024,15 +1047,96 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 return false;
             }
         };
+
+        retrieve_feedback = function() {crudFactory.getFeedback(tableTitle).success(function(data) {
+                $scope.feed_back = {};
+                $scope.data = {};
+                for (term of $scope.ranking) {
+                    term.valid = true;
+                    term.distance = term.ranking[1];
+                    term.distance_str =  String(term.distance).substring(0, 5);
+
+                    if (term.ieml == tableTitle)
+                        continue;
+
+                    for (term_feed_back of data) {
+
+                        if (term.ieml == term_feed_back.term_src || term.ieml == term_feed_back.term_dest) {
+                            if ((term_feed_back.relation == 'remove' && term.distance < 1.0)
+                            || (term_feed_back.relation == 'up' && term.distance >= term_feed_back.distance)
+                            || (term_feed_back.relation == 'down' && term.distance <= term_feed_back.distance)) {
+                                term.valid = false;
+                            }
+
+                            map = {
+                                'up': '>',
+                                'down': '<',
+                                'remove': '>'
+                            }
+
+                            rule = map[term_feed_back.relation] + " " + (term_feed_back.relation == 'remove' ? 1.0 : term.distance_str)
+
+                            $scope.feed_back[term.ieml] = {
+                                'state': term_feed_back.relation,
+                                'distance': term_feed_back.distance,
+                                'rule': rule,
+                                'id': term_feed_back.id,
+                                'term': term
+                            }
+
+                            $scope.data[term_feed_back.id] = {
+                                'relation': term_feed_back.relation,
+                                'distance': parseFloat(String(term_feed_back.distance).substring(0, 4)),
+                                'comment': term_feed_back.comment
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            })
+        }
+
+        $scope.feed_back = []
         $scope.ranking = [];
+
         $scope.compute_ranking = false;
         $scope.getRanking = function() {
             $scope.compute_ranking = true;
-
             crudFactory.getRanking(tableTitle).success(function(data) {
                 $scope.compute_ranking = false;
                 $scope.ranking = data
-            })
+                retrieve_feedback();
+            });
+
+        }
+
+        $scope.feedback = function(term, type, distance, comment) {
+            data = {
+                'term_src': tableTitle,
+                'term_dest': term.ieml,
+                'relation': type,
+                'distance': distance,
+                'comment': comment,
+            }
+
+            console.log(data);
+
+            if (term.ieml in $scope.feed_back) {
+                crudFactory.update_feedback($scope.feed_back[term.ieml].id, data).success(function(data) {
+                    retrieve_feedback();
+                });
+            } else {
+                crudFactory.feedBackRanking(data).success(function(data) {
+                    retrieve_feedback();
+                })
+            }
+        }
+
+        $scope.remove_feedback = function(id) {
+            crudFactory.remove_feedback(id).success(function (data) {
+                retrieve_feedback();
+            });
         }
 
         function init() {
@@ -1246,22 +1350,24 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
             $scope.login = function(form) {
                 $scope.dataLoading = true;
+                data = {
+                    'username': $scope.formData['name'],
+                    'password': $scope.formData['password']
+                }
                 $http({
                     method  : 'POST',
-                    url     : api_url + '/client/authenticate',
-                    data    : $.param($scope.formData),  // pass in data as strings
+                    url     : api_url + '/login/',
+                    data    : $.param(data),  // pass in data as strings
                     headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
-                }).then(function(response) {
+                }).then(function(response) {console.log(response);
                     $scope.dataLoading=false;
-                    if (response.data.success) {
-                        // sharedProperties.secToken=response.data.token;
-                        $rootScope.token.value = response.data.token;
-                        $mdDialog.cancel();
-                    } else {
-                        $scope.error = response.data.message;
-                    }
+                    // sharedProperties.secToken=response.data.token;
+                    $rootScope.token.value = response.data.token;
+                    $mdDialog.cancel();
                 }, function(response) {
-                    //deal with excpetions i.e. network
+                    $scope.error = response.data.non_field_errors[0];
+                    $scope.dataLoading = false;
+
                 });
             }
         }

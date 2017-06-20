@@ -143,7 +143,7 @@
         </md-tab>
 
         <md-tab label="RANKING">
-            <md-content class="md-padding">
+            <md-content class="md-padding" layout="row">
 
               <md-button class="md-fab "
                          title="Compute the ranking"
@@ -154,10 +154,18 @@
                   <i class="material-icons spin" ng-show="compute_ranking">autorenew</i>
               </md-button>
 
-              <div ng-repeat="term in ranking">
-                  <div layout="column">
-                      <table>
+              <div layout="row" ng-show="ranking.length != 0">
+              <div flex="50">
+              <h4>Ranking</h4>
+
+                      <table class="ranking">
                           <tr>
+                            <th>Term</th>
+                            <th>Descriptor</th>
+                            <th>Relations</th>
+                            <th>Distance</th>
+                          </tr>
+                          <tr ng-repeat="term in ranking">
                               <td style="width:400px;">
                                   <a style="border: none;" align="left"
                                   href="#/dicEdit/IEML/{{language}}/{{term.ieml}}"
@@ -165,20 +173,49 @@
                               </td>
 
                               <td>
-                                  <table>
-
-                                      <tr>
-                                         <p  align="left">{{lookupLabels(term.ieml).DISP}}</p>
-                                      </tr>
-                                  </table>
+                                {{lookupLabels(term.ieml).DISP}}
                               </td>
-                              <td><p  align="left">{{term.relations}}</p></td>
-                              <td><p  align="left">{{term.ranking}}</p></td>
-
+                              <td>{{term.relations.join()}}</td>
+                              <td ng-class="{'invalid': !term.valid}">{{term.distance_str}}</td>
+                              <td style="padding-top: 0px; padding-bottom: 0px; border-bottom: None">
+                                  <div class="ranking-icons">
+                                      <i class="material-icons md-24 md-dark md-inactive" ng-click="feedback(term, 'up',term.distance, '' )" ng-class="{'md-green': feed_back[term.ieml].state == 'up'}">keyboard_arrow_up</i>
+                                      <i class="material-icons md-18 md-dark md-inactive" ng-click="feedback(term, 'remove',term.distance, '' )" ng-class="{'md-green': feed_back[term.ieml].state == 'remove'}">clear</i>
+                                      <i class="material-icons md-24 md-dark md-inactive" ng-click="feedback(term, 'down',term.distance, '' )" ng-class="{'md-green': feed_back[term.ieml].state == 'down'}">keyboard_arrow_down</i>
+                                  </div>
+                              </td>
                           </tr>
                       </table>
-                  </div>
-              </div>
+            </div>
+            <div flex="50">
+                <h4>Feedback Rules</h4>
+                <table class="ranking">
+                    <tr>
+                        <th>Term</th>
+                        <th>Rule</th>
+                        <th>Distance</th>
+                        <th>Comment</th>
+                    </tr>
+                    <tr ng-repeat="term in feed_back">
+                        <td>{{term.term.ieml}}</td>
+                        <td>
+                            <select ng-model="data[term.id].relation">
+                                <option value="up" ng-selected="term.state == 'up'"><</option>
+                                <option value="remove" ng-selected="term.state == 'remove'">X</option>
+                                <option value="down" ng-selected="term.state == 'down'">></option>
+                            </select>
+                        </td>
+                        <td><input type="number" step="0.01" min="0" max="2" ng-model="data[term.id].distance" style="width: 80px;"></td>
+                        <td><input type='text' ng-model="data[term.id].comment"></td>
+
+                        <td class="ranking-icons">
+                            <i class="material-icons md-18 md-dark md-inactive" ng-click="feedback(term.term, data[term.id].relation, data[term.id].distance, data[term.id].comment)">save</i>
+                            <i class="material-icons md-18 md-dark md-inactive" ng-click="remove_feedback(term.id)">clear</i>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
             </md-content>
         </md-tab>
     </md-tabs>

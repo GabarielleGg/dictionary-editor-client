@@ -1,3 +1,30 @@
+.ranking td, .ranking th {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+.ranking {
+  border-right: 1px solid #ddd;
+}
+.ranking .invalid {
+  background-color: #f33
+}
+
+.ranking-icons {
+  width: 20px;
+}
+.ranking-icons i {
+  color: rgba(0, 0, 0, 0.26);
+  font-size: 20px;
+}
+.ranking-icons i:hover {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.md-green {
+  color: rgba(0, 170, 0, 0.84) !important;
+  font-weight: bold;
+}
 
 .materialApp .text-capitalize {
   text-transform: capitalize; }
@@ -28,9 +55,9 @@
   margin: 0px; }
  .md-virtual-repeat-container .md-virtual-repeat-offsetter {
   padding-left: 16px; }
-/* ------------- styles for loadTerms ---------------*/  
-  
-/* ------------- styles for chips (not used) ---------------*/  
+/* ------------- styles for loadTerms ---------------*/
+
+/* ------------- styles for chips (not used) ---------------*/
  .custom-chips .md-chip {
   position: relative;
   padding-right: 35px; }
@@ -116,17 +143,17 @@ md-tab-item {
     max-width:none !important;
 }
 
-/* if the text is too long in the table's cells ...*/ 
+/* if the text is too long in the table's cells ...*/
 .gridListDynamicTiles .md-list-item-text p {
       /*text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden; */
 	  font-size: 10px;
-      margin:0 0px 0 0px; 
+      margin:0 0px 0 0px;
       padding:0;
       /*border: 5px solid navy;*/
 }
-	  
+
 /* styles needed to aling main menu icons with lables*/
 i.material-icons {
     vertical-align: middle;
@@ -149,18 +176,18 @@ span.ng-scope {
   .overlay{
       background-color:#EEE;
   }
-   
+
   .node circle {
     fill: #fff;
     stroke: steelblue;
     stroke-width: 1.5px;
   }
-   
+
   .node text {
-    font-size:10px; 
+    font-size:10px;
     font-family:sans-serif;
   }
-   
+
   .link {
     fill: none;
     stroke: #ccc;
@@ -200,4 +227,3 @@ span.ng-scope {
     font-family: Palatino;
     font-weight: bold;
 }
-
