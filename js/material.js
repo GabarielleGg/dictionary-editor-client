@@ -191,7 +191,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     }).
                     error(function(data, status, headers, config) {
                         scope.tempString = "Error executing 'exists' directive.";
-                        deferred.reject();
+                        deferred.resolve();
                     });
 
                     return deferred.promise;
