@@ -91,7 +91,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             },
 
             get_allIEML : function() {
-                return check_response($http.get(api_url '/all?version='+encodeURIComponent(sharedProperties.dictionary_version)));
+                return check_response($http.get(api_url + '/all?version='+encodeURIComponent(sharedProperties.dictionary_version)));
             },
 
             remove : function(id) {
