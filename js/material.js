@@ -882,38 +882,22 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             $location.path(earl);
         };
 
-        $scope.crossCheck = function( input) {
-            var newTemp = $filter("filter")(lstAllIEML, {IEML:input}, true);
-            return newTemp;
-        };
 
-        $scope.lookupLabels = function (inieml) {
 
-            var res = {};
+        $scope.allterms = {};
 
-            if (inieml == undefined)
-                return res;
-
-            var newTemp = $filter("filter")(lstAllIEML, {IEML:inieml}, true);
-
-            if (newTemp == undefined)
-                return res;
-
-            if (newTemp.length == 0)
-                return res;
-
-            res.EN = newTemp[0]?newTemp[0].EN:"none";
-            res.FR = newTemp[0]?newTemp[0].FR:"none";
-
-            if (language == "FR") {
-                res.DISP = newTemp[0]?newTemp[0].FR:"none";
+        $scope.lookupLabels = function(ieml) {
+            if (ieml in $scope.allterms) {
+                return {
+                    FR: $scope.allterms[ieml].FR,
+                    EN: $scope.allterms[ieml].EN,
+                    DISP: $scope.allterms[ieml][language]};
+            } else {
+                return {}
             }
-            else {
-                res.DISP = newTemp[0]?newTemp[0].EN:"none";
-            }
+        }
 
-            return res;
-        };
+
 
         function orderRelationsList() {
 
@@ -958,67 +942,8 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 return 0;
             }
 
-            function iemlOrderFunction(a_name, b_name){
-
-                if (!a_name.exists && !b_name.exists)
-                    return 0;
-                if (a_name.exists && !b_name.exists)
-                    return -1;
-                if (!a_name.exists && b_name.exists)
-                    return 1;
-
-                var a_arr = a_name.entry;
-                var b_arr = b_name.entry;
-
-                if (a_arr == undefined || b_arr == undefined)
-                    return 0;
-
-                if (a_arr.length == 0 || b_arr.length == 0)
-                    return 0;
-
-                var a = a_arr[0];
-                var b = b_arr[0];
-
-                //http://www.javascriptkit.com/javatutors/arraysort.shtml
-                //http://stackoverflow.com/questions/979256/sorting-an-array-of-javascript-objects
-                //Compare "a" and "b" in some fashion, and return -1, 0, or 1
-                if (parseInt(a.LAYER) < parseInt(b.LAYER))
-                    return 1;
-                if (parseInt(a.LAYER) > parseInt(b.LAYER))
-                    return -1;
-                if (parseInt(a.TAILLE) < parseInt(b.TAILLE))
-                    return 1;
-                if (parseInt(a.TAILLE) > parseInt(b.TAILLE))
-                    return -1;
-
-                if (a.CANONICAL.length == b.CANONICAL.length) {
-
-                    var i=0, len=a.CANONICAL.length;
-                    for (; i<len; i++) {
-                        var comp = b.CANONICAL[i].localeCompare(a.CANONICAL[i]);
-                        if (comp == 0)
-                            continue;
-                        return comp;
-                    }
-                } else if (a.CANONICAL.length < b.CANONICAL.length) {
-                    var i=0, len=a.CANONICAL.length;
-                    for (; i<len; i++) {
-                        var comp = b.CANONICAL[i].localeCompare(a.CANONICAL[i]);
-                        if (comp == 0)
-                            continue;
-                        return comp;
-                    }
-                } else {
-                    var i=0, len=b.CANONICAL.length;
-                    for (; i<len; i++) {
-                        var comp = b.CANONICAL[i].localeCompare(a.CANONICAL[i]);
-                        if (comp == 0)
-                            continue;
-                        return comp;
-                    }
-                }
-
-                return 0;
+            function iemlOrderFunction(a, b){
+                return a.INDEX - b.INDEX
             }
 
             // sort relation names
@@ -1150,14 +1075,18 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             function callback() {
                 lstAllIEML = sharedProperties.allItems;
                 $scope.tableTitle = tableTitle;
+
+                for (term of lstAllIEML) {
+                    $scope.allterms[term.IEML] = term
+                }
+
                 // get other info from entry
-                entry = $filter("filter")(lstAllIEML, {IEML: tableTitle}, true)[0];
-                if (!entry) {
+                if (! (tableTitle in $scope.allterms)) {
                     $rootScope.showAlert('Term not existant', tableTitle)
                     $location.path('/');
                     return
                 }
-                $scope.DefinedEntry = entry;
+                $scope.DefinedEntry = $scope.allterms[tableTitle];
 
 
                 $scope.DefinedEntryClass = "n/a";
@@ -1175,11 +1104,12 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
                     //get the viz
                     for (var i = 0; i < allrels.length; i++) {
+                        allrels[i].rellist = allrels[i].rellist.slice(0, 10);
                         if (allrels[i].reltype == "Belongs to Paradigm") {
                             parent_paradigm = allrels[i].rellist[0].ieml;
-                            break;
                         }
                     }
+                    console.log(allrels);
 
                     // if null, it could be a paradigm or something weird, try wit itself
                     if (parent_paradigm == "none")
@@ -1204,12 +1134,11 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                                 for (var slice of tab.slice) {
                                     var input = slice.value;
                                     if (input != "") {
-                                        var means = $scope.crossCheck(input);
-                                        if (means != undefined && means.length > 0) {
-                                            var f = means[0].FR;
-                                            var e = means[0].EN;
 
-                                            // https://github.com/angular/material/issues/2583
+                                        var means = $scope.allterms[input];
+                                        if (means != undefined) {
+                                            var f = means.FR;
+                                            var e = means.EN;
 
                                             slice.means.fr = f;
                                             slice.means.en = e;
