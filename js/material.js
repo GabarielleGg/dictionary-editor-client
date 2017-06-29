@@ -975,10 +975,10 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
         retrieve_feedback = function() {crudFactory.getFeedback(tableTitle).success(function(data) {
                 $scope.feed_back = {};
-                $scope.data = {};
+                $scope.data = {};                
                 for (term of $scope.ranking) {
                     term.valid = true;
-                    term.distance = term.ranking[1];
+                    term.distance = term.ranking;
                     term.distance_str =  String(term.distance).substring(0, 5);
 
                     if (term.ieml == tableTitle)
