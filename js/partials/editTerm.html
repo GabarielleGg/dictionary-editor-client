@@ -10,11 +10,11 @@
     <form name="projectForm">
       <md-input-container>
         <label>ieml</label>
-        <input type="text" ng-readonly="readOnly" required iemlvalid exists md-maxlength="100"  spellcheck="false" name="ieml" ng-model="iemlValue" />
+        <input type="text" ng-readonly="readOnly" required iemlvalid exists spellcheck="false" name="ieml" ng-model="iemlValue" />
         <div ng-messages="projectForm.ieml.$error">
           <div ng-message="required">This is required.</div>
           <div ng-message="exists" class="no-animate">Value already exists in database.</div>
-          <div ng-message="iemlvalid" class="no-animate">Not a valid IEML.</div>			  
+          <div ng-message="iemlvalid" class="no-animate">Not a valid IEML.</div>
           <div ng-message="md-maxlength">The name has to be less than 100 characters long.</div>
         </div>
 
@@ -28,7 +28,7 @@
         <input type="text" required exists name="FR" ng-model="frenchValue">
         <div ng-messages="projectForm.FR.$error">
           <div ng-message="required">This is required.</div>
-		  <div ng-message="exists">Value already exists in database.</div>	
+		  <div ng-message="exists">Value already exists in database.</div>
         </div>
       </md-input-container>
       <md-input-container>
@@ -36,7 +36,7 @@
         <input type="text" required exists name="EN" ng-model="englishValue">
         <div ng-messages="projectForm.EN.$error">
           <div ng-message="required">This is required.</div>
-		  <div ng-message="exists">Value already exists in database.</div>	
+		  <div ng-message="exists">Value already exists in database.</div>
         </div>
       </md-input-container>
 
@@ -54,25 +54,25 @@
       </md-input-container>
       <!--<div layout="row">-->
       <!--</div>-->
-      
+
       <p> Inhibit: <p/>
       <div ng-show="data.isParadigm" ng-repeat="item in enableRelationsArray">
         <md-checkbox ng-checked="exists(item, enableRelationsArraySelected)" ng-click="toggle(item, enableRelationsArraySelected)">
-          {{ item }} 
+          {{ item }}
         </md-checkbox>
       </div>
-            
+
       <div layout="row">
-        <md-button class="md-raised" style="text-transform: none;" ng-disabled="true" ng-model="data.layer"> 
+        <md-button class="md-raised" style="text-transform: none;" ng-disabled="true" ng-model="data.layer">
           Layer {{data.layer}}
-        </md-button> 
-        <md-button class="md-raised" style="text-transform: none;" ng-disabled="true" ng-model="data.gclass"> 
+        </md-button>
+        <md-button class="md-raised" style="text-transform: none;" ng-disabled="true" ng-model="data.gclass">
           Class {{data.gclass}}
-        </md-button> 		
-      </div>	
-         
+        </md-button>
+      </div>
+
     </form>
-	<md-button class="md-raised" ng-click="submitEdit()" ng-disabled="projectForm.$invalid"> Submit </md-button>	
+	<md-button class="md-raised" ng-click="submitEdit()" ng-disabled="projectForm.$invalid"> Submit </md-button>
 	<md-button class="md-raised" ng-click="cancelEdit()"> Cancel </md-button>
 
     <!--md-button class="md-raised" ng-click="prevHistory()"> Previous </md-button-->
