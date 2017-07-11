@@ -113,7 +113,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
             iemltable : function(input) {
                 // $http.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded";
-                return ($http.get(api_url + '/scripts/tables?ieml='+encodeURIComponent(input)));
+                return ($http.get(api_url + '/scripts/tables?ieml='+encodeURIComponent(input) + "&version=" + encodeURIComponent(sharedProperties.dictionary_version)));
             },
 
             rels : function(input)  {
@@ -882,8 +882,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             $location.path(earl);
         };
 
-
-
         $scope.allterms = {};
 
         $scope.lookupLabels = function(ieml) {
@@ -975,7 +973,7 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
         retrieve_feedback = function() {crudFactory.getFeedback(tableTitle).success(function(data) {
                 $scope.feed_back = {};
-                $scope.data = {};                
+                $scope.data = {};
                 for (term of $scope.ranking) {
                     term.valid = true;
                     term.distance = term.ranking;
