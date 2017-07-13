@@ -1,5 +1,5 @@
 
-angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph', 'ngStorage'])
+angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph', 'ngStorage', 'vAccordion', 'ngAnimate'])
     .config(function ($provide) {
         $provide.decorator('$q', function ($delegate) {
             var defer = $delegate.defer;
@@ -1020,19 +1020,19 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             })
         }
 
-        $scope.feed_back = []
+        // $scope.feed_back = []
         $scope.ranking = [];
-
-        $scope.compute_ranking = false;
-        $scope.getRanking = function() {
-            $scope.compute_ranking = true;
-            crudFactory.getRanking(tableTitle).success(function(data) {
-                $scope.compute_ranking = false;
-                $scope.ranking = data
-                retrieve_feedback();
-            });
-
-        }
+        //
+        // $scope.compute_ranking = false;
+        // $scope.getRanking = function() {
+        //     $scope.compute_ranking = true;
+        //     crudFactory.getRanking(tableTitle).success(function(data) {
+        //         $scope.compute_ranking = false;
+        //         $scope.ranking = data
+        //         retrieve_feedback();
+        //     });
+        //
+        // }
 
         $scope.feedback = function(term, type, distance, comment) {
             data = {
@@ -1159,6 +1159,10 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                     }
                 });
             }
+
+            crudFactory.getRanking(tableTitle).success(function(data) {
+                $scope.ranking = data
+            })
 
             if(sharedProperties.allItems.length == 0) {
                 crudFactory.get_version().success(function(value) {

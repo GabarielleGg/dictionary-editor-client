@@ -143,22 +143,41 @@
         </md-tab>
 
         <md-tab label="RANKING">
-            <md-content class="md-padding" layout="row">
+            <md-content class="md-padding">
 
-              <md-button class="md-fab "
+              <!-- <md-button class="md-fab "
                          title="Compute the ranking"
                          ng-show="ranking.length == 0"
                          ng-click="getRanking()"
                          ng-disabled="sharedProperties.updating">
                   <i class="material-icons" ng-show="!compute_ranking">launch</i>
                   <i class="material-icons spin" ng-show="compute_ranking">autorenew</i>
-              </md-button>
+              </md-button> -->
 
               <div layout="row" ng-show="ranking.length != 0">
-              <div flex="50">
+              <div flex="100">
               <h4>Ranking</h4>
+              <v-accordion class="vAccordion--default" multiple>
+                  <v-pane ng-repeat="relation_type in ranking">
+                  <v-pane-header>
+                    {{relation_type['reltype']}}
+                  </v-pane-header>
+                  <v-pane-content>
+                      <ul>
+                        <li ng-repeat="term in relation_type['terms']">
+                          <a style="border: none;" align="left"
+                          href="#/dicEdit/IEML/{{language}}/{{term}}"
+                          class="btn">{{term}}</a>
 
-                      <table class="ranking">
+                          {{lookupLabels(term).DISP}}
+
+                        </li>
+                      </ul>
+                  </v-pane-content>
+                </v-pane>
+              </v-accordion>
+
+                      <!-- <table class="ranking">
                           <tr>
                             <th>Term</th>
                             <th>Descriptor</th>
@@ -185,9 +204,9 @@
                                   </div>
                               </td>
                           </tr>
-                      </table>
+                      </table> -->
             </div>
-            <div flex="50">
+            <!-- <div flex="50">
                 <h4>Feedback Rules</h4>
                 <table class="ranking">
                     <tr>
@@ -214,7 +233,7 @@
                         </td>
                     </tr>
                 </table>
-            </div>
+            </div> -->
         </div>
             </md-content>
         </md-tab>
