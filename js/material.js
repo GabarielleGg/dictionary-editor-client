@@ -1158,11 +1158,12 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                         $scope.materialTables = $scope.fakeReply.Tables;
                     }
                 });
+                crudFactory.getRanking(tableTitle).success(function(data) {
+                    $scope.ranking = data
+                })
+
             }
 
-            crudFactory.getRanking(tableTitle).success(function(data) {
-                $scope.ranking = data
-            })
 
             if(sharedProperties.allItems.length == 0) {
                 crudFactory.get_version().success(function(value) {
