@@ -10,7 +10,7 @@
     <form name="projectForm">
       <md-input-container>
         <label>ieml</label>
-        <input type="text" ng-readonly="readOnly" required iemlvalid exists spellcheck="false" name="ieml" ng-model="iemlValue" />
+        <input type="text" ng-readonly="readOnly" required iemlvalid spellcheck="false" name="ieml" ng-model="iemlValue" />
         <div ng-messages="projectForm.ieml.$error">
           <div ng-message="required">This is required.</div>
           <div ng-message="exists" class="no-animate">Value already exists in database.</div>
@@ -25,7 +25,7 @@
 
       <md-input-container>
         <label>French</label>
-        <input type="text" required exists name="FR" ng-model="frenchValue">
+        <input type="text" required name="FR" ng-model="frenchValue">
         <div ng-messages="projectForm.FR.$error">
           <div ng-message="required">This is required.</div>
 		  <div ng-message="exists">Value already exists in database.</div>
@@ -33,7 +33,7 @@
       </md-input-container>
       <md-input-container>
         <label>English</label>
-        <input type="text" required exists name="EN" ng-model="englishValue">
+        <input type="text" required name="EN" ng-model="englishValue">
         <div ng-messages="projectForm.EN.$error">
           <div ng-message="required">This is required.</div>
 		  <div ng-message="exists">Value already exists in database.</div>
