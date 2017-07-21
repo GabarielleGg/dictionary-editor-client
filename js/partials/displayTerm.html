@@ -153,30 +153,44 @@
                   <i class="material-icons" ng-show="!compute_ranking">launch</i>
                   <i class="material-icons spin" ng-show="compute_ranking">autorenew</i>
               </md-button> -->
-
-              <div layout="row" ng-show="ranking.length != 0">
-              <div flex="100">
               <h4>Ranking</h4>
-              <v-accordion class="vAccordion--default" multiple>
-                  <v-pane ng-repeat="relation_type in ranking">
-                  <v-pane-header>
-                    {{relation_type['reltype']}}
-                  </v-pane-header>
-                  <v-pane-content>
-                      <ul>
-                        <li ng-repeat="term in relation_type['terms']">
-                          <a style="border: none;" align="left"
-                          href="#/dicEdit/IEML/{{language}}/{{term}}"
-                          class="btn">{{term}}</a>
-
-                          {{lookupLabels(term).DISP}}
-
-                        </li>
-                      </ul>
-                  </v-pane-content>
-                </v-pane>
-              </v-accordion>
-
+              <div layout="row" ng-show="ranking.length != 0">
+                <div flex="50" ng-repeat="name in ['singular_sequences', 'paradigms']" style="padding: 5px;">
+                  <h5>{{ name == 'singular_sequences'? "Singular Sequences" : "Paradigms"}}</h5>
+                  <v-accordion class="vAccordion--default" multiple>
+                    <v-pane ng-repeat="relation_type in ranking[name]">
+                      <v-pane-header>{{relation_type['reltype']}}</v-pane-header>
+                      <v-pane-content>
+                        <ul>
+                          <li ng-repeat="term in relation_type['terms']">
+                            <a style="border: none;" align="left"
+                            href="#/dicEdit/IEML/{{language}}/{{term}}"
+                            class="btn">{{term}}</a>
+                            {{lookupLabels(term).DISP}}
+                          </li>
+                        </ul>
+                      </v-pane-content>
+                    </v-pane>
+                  </v-accordion>
+                </div>
+                <!-- <div flex='50'>
+                  <h5>Paradigms</h5>
+                  <v-accordion class="vAccordion--default" multiple>
+                    <v-pane ng-repeat="relation_type in ranking['paradigms']">
+                      <v-pane-header>{{relation_type['reltype']}}</v-pane-header>
+                      <v-pane-content>
+                        <ul>
+                          <li ng-repeat="term in relation_type['terms']">
+                            <a style="border: none;" align="left"
+                            href="#/dicEdit/IEML/{{language}}/{{term}}"
+                            class="btn">{{term}}</a>
+                            {{lookupLabels(term).DISP}}
+                          </li>
+                        </ul>
+                      </v-pane-content>
+                    </v-pane>
+                  </v-accordion>
+                </div> -->
                       <!-- <table class="ranking">
                           <tr>
                             <th>Term</th>
@@ -205,7 +219,6 @@
                               </td>
                           </tr>
                       </table> -->
-            </div>
             <!-- <div flex="50">
                 <h4>Feedback Rules</h4>
                 <table class="ranking">

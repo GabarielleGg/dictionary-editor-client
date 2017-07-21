@@ -1022,17 +1022,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
         // $scope.feed_back = []
         $scope.ranking = [];
-        //
-        // $scope.compute_ranking = false;
-        // $scope.getRanking = function() {
-        //     $scope.compute_ranking = true;
-        //     crudFactory.getRanking(tableTitle).success(function(data) {
-        //         $scope.compute_ranking = false;
-        //         $scope.ranking = data
-        //         retrieve_feedback();
-        //     });
-        //
-        // }
 
         $scope.feedback = function(term, type, distance, comment) {
             data = {
