@@ -42,35 +42,25 @@
                     </p>
                 </div>
 
-                <br/>
-
-
-                <div ng-repeat="def in definitions">
-
-                    <div layout="col" ng-show="def.visible">
-                        <li style = "width:15%;padding-top: 2px;" >
-                            {{def.reltype}}
+                <br>
+                <p><b>Relations</b></p>
+                <v-accordion class="vAccordion--default" multiple>
+                  <v-pane ng-repeat="def in definitions">
+                    <v-pane-header>{{def.reltype}}</v-pane-header>
+                    <v-pane-content>
+                      <ul class="ieml-entry">
+                        <li ng-repeat="lnk in def.rellist">
+                          <a style="border: none;" align="left"
+                          href="#/dicEdit/IEML/{{language}}/{{lnk.ieml}}"
+                          class="btn">{{lnk.ieml}}</a>
+                          <span>{{lookupLabels(lnk.ieml).DISP}}</span>
                         </li>
-                    </div>
+                      </ul>
+                    </v-pane-content>
+                  </v-pane>
+                </v-accordion>
 
-                    <div ng-repeat="lnk in def.rellist" ng-show="def.visible">
-                        <div layout="column" ng-show="lnk.exists">
-                            <table>
-                                <tr>
-                                    <td style="width:400px;">
-                                        <a style="border: none;" align="left" href="#/dicEdit/IEML/{{language}}/{{lnk.ieml}}" target="_self" ng-class="{disabled:!lnk.exists, buttonflat:lnk.exists, buttonflatdis:!lnk.exists}"   class="btn">{{lnk.ieml}}</a>
-                                    </td>
 
-                                    <td>
-                                        <table>
-                                            <tr> <p  align="left">{{lookupLabels(lnk.ieml).DISP}}</p></tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
 
             </md-content>
         </md-tab>
@@ -161,12 +151,12 @@
                     <v-pane ng-repeat="relation_type in ranking[name]">
                       <v-pane-header>{{relation_type['reltype']}}</v-pane-header>
                       <v-pane-content>
-                        <ul>
+                        <ul class="ieml-entry">
                           <li ng-repeat="term in relation_type['terms']">
                             <a style="border: none;" align="left"
                             href="#/dicEdit/IEML/{{language}}/{{term}}"
                             class="btn">{{term}}</a>
-                            {{lookupLabels(term).DISP}}
+                            <span>{{lookupLabels(term).DISP}}</span>
                           </li>
                         </ul>
                       </v-pane-content>
