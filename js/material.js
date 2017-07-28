@@ -712,7 +712,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             orderList();
         });
 
-        console.log(sharedProperties.allItems);
         if (sharedProperties.allItems.length == 0) {
             crudFactory.get_version().success(function(value) {
                 sharedProperties.dictionary_version = value;
@@ -1091,12 +1090,11 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
 
                     //get the viz
                     for (var i = 0; i < allrels.length; i++) {
-                        allrels[i].rellist = allrels[i].rellist.slice(0, 10);
+                        // allrels[i].rellist = allrels[i].rellist.slice(0, 10);
                         if (allrels[i].reltype == "Belongs to Paradigm") {
                             parent_paradigm = allrels[i].rellist[0].ieml;
                         }
                     }
-                    console.log(allrels);
 
                     // if null, it could be a paradigm or something weird, try wit itself
                     if (parent_paradigm == "none")
