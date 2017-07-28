@@ -41,11 +41,57 @@
   margin-right: auto; }
 
 
+.ieml-entry {
+  list-style: none;
+}
 
+.ieml-entry  li {
+  display: flex;
+  align-items: center;
+}
+
+.ieml-entry li span {
+  padding: 0 6px;
+  margin: 6px 8px;
+  display: inline-block;
+
+}
+
+.ieml-entry li a {
+  background-color: rgb(250, 250, 250) !important;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  border-radius: 3px;
+  box-sizing: border-box;
+  position: relative;
+  outline: none;
+  border: 0;
+  display: inline-block;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 0 6px;
+  margin: 6px 8px;
+  line-height: 36px;
+  min-height: 36px;
+  background: transparent;
+      background-color: transparent;
+  white-space: nowrap;
+  min-width: 88px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 14px;
+  font-style: inherit;
+  font-variant: inherit;
+  font-family: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
 /* ------------- styles for loadTerms ---------------*/
  #vertical-container {
-  height: 600px;
-  width: 900px; }
+  height: calc(100vh - 170px);
+}
  .repeated-item {
   border-bottom: 1px solid #ddd;
   box-sizing: border-box;
