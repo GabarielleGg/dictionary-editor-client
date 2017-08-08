@@ -894,68 +894,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
             }
         }
 
-
-
-        function orderRelationsList() {
-
-            function getRelVal(name) {
-
-                if (name == "Belongs to Paradigm")
-                    return 0;
-                if (name == "Contains")
-                    return 1;
-                if (name == "Contained in")
-                    return 2;
-                if (name == "Associated siblings")
-                    return 3;
-                if (name == "Opposed siblings")
-                    return 4;
-                if (name == "Twin siblings")
-                    return 5;
-                if (name == "Crossed siblings")
-                    return 6;
-                if (name == "Ancestors in substance")
-                    return 7;
-                if (name == "Ancestors in attribute")
-                    return 8;
-                if (name == "Ancestors in mode")
-                    return 9;
-                if (name == "Descendents in substance")
-                    return 10;
-                if (name == "Descendents in attribute")
-                    return 11;
-                if (name == "Descendents in mode")
-                    return 12;
-                return 13;
-            }
-
-            function relationsOrderFunction(a, b){
-                var a_val = getRelVal(a.reltype);
-                var b_val = getRelVal(b.reltype);
-                if (a_val < b_val)
-                    return -1;
-                if (a_val > b_val)
-                    return 1;
-                return 0;
-            }
-
-            function iemlOrderFunction(a, b){
-                return a.INDEX - b.INDEX
-            }
-
-            // sort relation names
-            $scope.definitions.sort(relationsOrderFunction);
-            // sort relation endpoints based on ieml order
-            $scope.definitions.forEach(function(el){
-                if (el.rellist.length > 1) {
-                    for(var i = 0; i< el.rellist.length; i++) {
-                        el.rellist[i].entry = $filter("filter")(lstAllIEML, {IEML: el.rellist[i].ieml}, true);
-                    }
-                    el.rellist.sort(iemlOrderFunction)
-                }
-            });
-        };
-
         // if a table cannot be generated for a particular input,
         // we show tables that contain the input. This filters all
         // relations for the 'contain' relations.
@@ -1031,8 +969,6 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                 'comment': comment,
             }
 
-            console.log(data);
-
             if (term.ieml in $scope.feed_back) {
                 crudFactory.update_feedback($scope.feed_back[term.ieml].id, data).success(function(data) {
                     retrieve_feedback();
@@ -1096,12 +1032,14 @@ angular.module('materialApp', ['ngRoute', 'ngMaterial', 'ngMessages', 'd3graph',
                         }
                     }
 
+                    console.log(allrels)
+
                     // if null, it could be a paradigm or something weird, try wit itself
                     if (parent_paradigm == "none")
                         parent_paradigm = tableTitle;
 
                     $scope.definitions = allrels;
-                    orderRelationsList();
+                    // orderRelationsList();
                 });
 
                 crudFactory.iemltable(tableTitle).success(function(data) {
